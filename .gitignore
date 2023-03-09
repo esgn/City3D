@@ -35,3 +35,4 @@ cmake-build-release
 .DS_Store
 Release
 CGAL-*/
+data/IGN

@@ -74,6 +74,8 @@ add_subdirectory(method)
 
 add_subdirectory(CLI_Example_1)  # command line example
 add_subdirectory(CLI_Example_2)  # command line example
+add_subdirectory(CLI_IGN_LIDAR_Footprints)  # command line example for IGN datasets
+add_subdirectory(CLI_IGN_LIDAR)  # command line example for IGN datasets
 add_subdirectory(City3D)         # demo with GUI
 
 
