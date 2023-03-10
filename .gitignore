@@ -34,5 +34,14 @@ cmake-build-debug
 cmake-build-release
 .DS_Store
 Release
+
+# IGN addition
+# Do not commit CGAL 
 CGAL-*/
+# Do not commit IGN test dataset
 data/IGN
+# Do not commit results on default dataset
+data/building_instances/*.obj
+002_result.obj
+# Do not commit params.csv
+*.csv

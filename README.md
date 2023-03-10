@@ -62,6 +62,8 @@ You can build City3D from the source code˙
 
   Don't have any experience with C/C++ programming? Then check this <a href="https://github.com/LiangliangNan/Easy3D/blob/main/HowToBuild.md">How to build</a> I wrote for [Easy3D](https://github.com/LiangliangNan/Easy3D).
 
+In case of `undefined reference` when linking with Gurobi have a look at [this post](https://support.gurobi.com/hc/en-us/articles/360039093112-How-do-I-resolve-undefined-reference-errors-while-linking-Gurobi-in-C-)
+
 ### Run City3D
 
 This repository includes three executable programs:
