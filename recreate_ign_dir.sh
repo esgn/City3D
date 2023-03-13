@@ -10,14 +10,18 @@ DST_FOOTPRINTS=$IGN_DIR"bdtopo_footprints_as_obj/"
 
 rm -rf $IGN_DIR
 mkdir -p $IGN_DIR
+echo "$IGN_DIR recreated"
 
 rm -fr $RESULTS_DIR
 mkdir -p $RESULTS_DIR
+echo "$RESULTS_DIR recreated"
 
 rm -rf $DST_LIDAR_PATCHES
 mkdir -p $DST_LIDAR_PATCHES
 cp $SRC_LIDAR_PATCHES* $DST_LIDAR_PATCHES
+echo "$DST_LIDAR_PATCHES recreated"
 
 rm -rf $DST_FOOTPRINTS
 mkdir -p $DST_FOOTPRINTS
 cp $SRC_FOOTPRINTS* $DST_FOOTPRINTS
+echo "$DST_FOOTPRINTS recreated"
