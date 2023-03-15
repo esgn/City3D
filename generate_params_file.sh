@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-lidar_dir="data/IGN/lidar_crops_as_ply/"
-obj_dir="data/IGN/bdtopo_footprints_as_obj/"
+lidar_dir="data/IGN/ply_extracts/"
+obj_dir="data/IGN/obj_footprints/"
 result_dir="data/IGN/results/"
 output_csv_file="params.csv"
 

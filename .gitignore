@@ -46,3 +46,7 @@ data/building_instances/*.obj
 # Do not commit params.csv
 *.csv
 *.log
+failed.txt
+# venv
+venv/
+*.obj

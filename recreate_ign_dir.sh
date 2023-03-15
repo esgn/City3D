@@ -3,10 +3,13 @@
 IGN_DIR="data/IGN/"
 RESULTS_DIR=$IGN_DIR"results"
 MOUNT_POINT="/mnt/IGNFAB/CITY3D_INPUT/"
-SRC_LIDAR_PATCHES=$MOUNT_POINT"lidar_cropped_to_building_with_buffer_as_ply/"
-DST_LIDAR_PATCHES=$IGN_DIR"lidar_crops_as_ply/"
-SRC_FOOTPRINTS=$MOUNT_POINT"btopo_footprints_as_obj/"
-DST_FOOTPRINTS=$IGN_DIR"bdtopo_footprints_as_obj/"
+LIDAR_PATCHES_ARCHIVE="ply_extracts.tar.gz"
+FOOTPRINTS_ARCHIVE="obj_footprints.tar.gz"
+SRC_LIDAR_PATCHES=$MOUNT_POINT$LIDAR_PATCHES_ARCHIVE
+DST_LIDAR_PATCHES="ply_extracts"
+SRC_FOOTPRINTS=$MOUNT_POINT$FOOTPRINTS_ARCHIVE
+DST_FOOTPRINTS="obj_footprints"
+
 
 rm -rf $IGN_DIR
 mkdir -p $IGN_DIR
@@ -16,12 +19,14 @@ rm -fr $RESULTS_DIR
 mkdir -p $RESULTS_DIR
 echo "$RESULTS_DIR recreated"
 
+cd $IGN_DIR
+
 rm -rf $DST_LIDAR_PATCHES
-mkdir -p $DST_LIDAR_PATCHES
-cp $SRC_LIDAR_PATCHES* $DST_LIDAR_PATCHES
+cp $SRC_LIDAR_PATCHES .
+tar -zxf $LIDAR_PATCHES_ARCHIVE
 echo "$DST_LIDAR_PATCHES recreated"
 
 rm -rf $DST_FOOTPRINTS
-mkdir -p $DST_FOOTPRINTS
-cp $SRC_FOOTPRINTS* $DST_FOOTPRINTS
+cp $SRC_FOOTPRINTS .
+tar -zxf $FOOTPRINTS_ARCHIVE 
 echo "$DST_FOOTPRINTS recreated"
