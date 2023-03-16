@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This scripts generates building using City3D and parrallel to speed things up 
+# and automatically kill hanging process after a certain timeout
+
 input_csv_file="params.csv"
 joblog_file="city3d.csv"
 failed_file="failed.txt"

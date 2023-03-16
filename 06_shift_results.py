@@ -1,24 +1,19 @@
-import open3d as o3d
 import os, sys
 from statistics import mean
-import numpy as np
 import shutil
 
-# This script processes the input datasets and apply a global shift to them
-# to set a new origin at model center
+# This scripts takes the building reconstructed by City3D
+# and shift to them to their original position
 
-ply_dir="data/IGN/ply_extracts/"
-obj_dir="data/IGN/obj_footprints/"
-output_ply_dir="data/IGN/ply_extracts_shifted/"
-output_obj_dir="data/IGN/obj_footprints_shifted/"
-output_origin_dir="data/IGN/origin_shift/"
+results_dir="data/IGN/results/"
+output_dir="data/IGN/results_shifted/"
+origins_dir="data/IGN/origin_shift/"
 
 def recreate_dir(output_dir):
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.mkdir(output_dir)
 
-# Read obj file using basic python 
 def read_obj_file(filepath):
         vertices, normals, faces = [],[],[]
         with open(filepath) as src:
@@ -36,7 +31,6 @@ def read_obj_file(filepath):
                         line = src.readline().rstrip()
         return vertices, normals, faces
 
-# Write obj file using basic python 
 def write_obj_file(filepath, vertices, normals, faces):
         with open(filepath,'w') as dst:
                 for vertex in vertices:
@@ -49,28 +43,23 @@ def write_obj_file(filepath, vertices, normals, faces):
                         fc = ['f'] + list(str(f) for f in face)
                         dst.write( ' '.join(fc)+"\n")
 
+def read_origin(filepath):
+        fline=open(filepath).readline().rstrip()       
+        center = [float(x) for x in fline.split(' ')]
+        return center
+       
 def main():
-        recreate_dir(output_ply_dir)
-        recreate_dir(output_obj_dir)
-        recreate_dir(output_origin_dir)
-        for f in os.listdir(ply_dir):
+        recreate_dir(output_dir)
+        for f in os.listdir(results_dir):
                 cleabs = f.split(".")[0]
-                # read poincloud patch ply file
-                pcd = o3d.io.read_point_cloud(ply_dir+f)
-                # get point cloud center
-                center = pcd.get_center()
-                # We keep only x and y center as we dont want to shift altitudes
-                center[2] = 0
-                pcd.translate(center*-1,relative=True)
-                # write resulting ply with global shift
-                o3d.io.write_point_cloud(output_ply_dir+f, pcd, write_ascii=True)
-                # load obj footprint file
-                vertices, normals, faces = read_obj_file(obj_dir+cleabs+".obj")
-                # write obj footprint file with global shift
-                write_obj_file(output_obj_dir+cleabs+".obj", vertices-center, normals, faces)
-                with open(output_origin_dir+cleabs+".origin",'w') as origin:
-                       center = center*-1
-                       origin.write(' '.join(str(x) for x in center))
+                # read building obj file
+                vertices, normals, faces = read_obj_file(results_dir+f)
+                # read center file
+                c = read_origin(origins_dir+cleabs+".origin")
+                # add origin coordinates to x and y model coordinates
+                vertices = [[v[0]+c[0],v[1]+c[1],v[2]] for v in vertices]
+                # write obj file with shift
+                write_obj_file(output_dir+cleabs+".obj", vertices, normals, faces)
 
 if __name__ == "__main__":
     main()

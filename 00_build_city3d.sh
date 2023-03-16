@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script download CGAL and build City3D executables with header only CGAL
+
 BUILD_DIR="Release"
 CGAL_VERSION="5.2.2"
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script generates the list of parameters that will be required
+# to generate each individual building with City3D and parallel
+
 lidar_dir="data/IGN/ply_extracts_shifted/"
 obj_dir="data/IGN/obj_footprints_shifted/"
 result_dir="data/IGN/results/"

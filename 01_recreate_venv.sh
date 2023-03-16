@@ -2,7 +2,7 @@
 
 # Launch this script as
 # $> . 01_recreate_venv.sh
-# to be directly in the recreated venv
+# to recreate venv and directly be placed inside it
 
 VENV_DIR="venv/city3d"
 
