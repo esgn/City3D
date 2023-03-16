@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 
+input_csv_file="params.csv"
 joblog_file="city3d.csv"
 failed_file="failed.txt"
 start=$(date +%s.%N)
-timeout_seconds=180
+# a large timeout is required for certain buildings
+# a large timeout is necessary to kill endless process which occurs for some builing
+timeout_seconds=1200
 
-# remove existing files
+# remove existing log files
 rm $joblog_file 2> /dev/null
 rm $failed_file 2> /dev/null
 
 # Launch city3D in parallel jobs to speed things up
-cat params.csv | parallel --timeout $timeout_seconds --colsep ',' --jobs $(nproc) --joblog $joblog_file ./Release/bin/CLI_IGN_LIDAR_Footprints {1} {2} {3} >> /dev/null 2>&1  
+cat $input_csv_file | parallel --timeout $timeout_seconds --colsep ',' --jobs $(nproc) --joblog $joblog_file ./Release/bin/CLI_IGN_LIDAR_Footprints {1} {2} {3} >> /dev/null 2>&1  
 
 duration=$(echo "$(date +%s.%N) - $start" | bc)
 execution_time=`printf "%.2f seconds" ${duration/./,}`
@@ -25,6 +28,7 @@ do
     then
         building_failure=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $building_failure >> $failed_file
+        echo $building_failure
         
     fi
 done < <(tail -n +2 $joblog_file)

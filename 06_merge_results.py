@@ -17,8 +17,6 @@ for f in os.listdir(results_dir):
         trimesh.repair.fix_winding(mesh)
         trimesh.repair.fix_normals(mesh)
         trimesh.repair.broken_faces(mesh)
-        # mesh.bounding_box_oriented.show()
-        # mesh.vertices -= mesh.center_mass
         meshes.append(mesh)
         total_count+=1
 
@@ -26,8 +24,4 @@ print(str(total_count) + " meshes au total")
 print(str(broken_count) + " meshes non étanches")
 
 combined = trimesh.util.concatenate(meshes)
-obj = combined.export("test.obj")
-
-
-
-
+obj = combined.export("merged_results.obj")

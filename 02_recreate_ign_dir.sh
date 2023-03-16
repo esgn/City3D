@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# To run this script a mount point /mnt/IGNFAB must be defined locally
+
 IGN_DIR="data/IGN/"
 RESULTS_DIR=$IGN_DIR"results"
 MOUNT_POINT="/mnt/IGNFAB/CITY3D_INPUT/"
@@ -9,7 +11,6 @@ SRC_LIDAR_PATCHES=$MOUNT_POINT$LIDAR_PATCHES_ARCHIVE
 DST_LIDAR_PATCHES="ply_extracts"
 SRC_FOOTPRINTS=$MOUNT_POINT$FOOTPRINTS_ARCHIVE
 DST_FOOTPRINTS="obj_footprints"
-
 
 rm -rf $IGN_DIR
 mkdir -p $IGN_DIR

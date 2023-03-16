@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Launch this script as
+# $> . 01_recreate_venv.sh
+# to be directly in the recreated venv
+
 VENV_DIR="venv/city3d"
 
 if [ -d "$VENV_DIR" ]

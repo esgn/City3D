@@ -14,9 +14,8 @@ then
     rm -rf $BUILD_DIR
 fi
 
-# Compile alpha shape executable
+# Compile city3d shape executables
 mkdir $BUILD_DIR
 cd $BUILD_DIR
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(($(nproc)))
-
