@@ -69,7 +69,7 @@ def main():
                 # write obj footprint file with global shift
                 write_obj_file(output_obj_dir+cleabs+".obj", vertices-center, normals, faces)
                 with open(output_origin_dir+cleabs+".origin",'w') as origin:
-                       center = center*-1
+                       center = center
                        origin.write(' '.join(str(x) for x in center))
 
 if __name__ == "__main__":
