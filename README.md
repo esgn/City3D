@@ -1,3 +1,14 @@
+> **Note**
+>
+> This project contains first tests with city3D conducted at IGNfab. A series of scripts has been added to test building generation.
+>
+> `00_build_city3d.sh` downloads CGAL and builds the project
+>
+> Execute `. 01_recreate_venv.sh` to recreate python venv and enter it directly
+>
+> The remaining scripts prepare datasets, generate building using GNU parallel and merge the results in a single `.obj` file.
+
+
 ### City3D: Large-scale Building Reconstruction from Airborne LiDAR Point Clouds
 
 <p align="center"> 
@@ -27,7 +38,8 @@ You can build City3D from the source code˙
     - [OpenCV](https://opencv.org/releases/) (v4.0 and later, only the main modules are needed).
     - [Gurobi](https://www.gurobi.com/). **Note for Linux users:** You may have to build the Gurobi library (`libgurobi_c++.a`) 
       because the prebuilt one in the original package might NOT be compatible with your compiler. To do so, go to `PATH-TO-GUROBI/src/build` 
-      and run `make`. Then replace the original `libgurobi_c++.a` (in the `lib` directory) with your generated file.
+      and run `make`. Then replace the original `libgurobi_c++.a` (in the `lib` directory) with your generated file. See also [this post](https://support.gurobi.com/hc/en-us/articles/360039093112-How-do-I-resolve-undefined-reference-errors-while-linking-Gurobi-in-C-)
+
 
 * Build
   
@@ -61,8 +73,6 @@ You can build City3D from the source code˙
     For Windows users: your IDE must be set for `x64`.
 
   Don't have any experience with C/C++ programming? Then check this <a href="https://github.com/LiangliangNan/Easy3D/blob/main/HowToBuild.md">How to build</a> I wrote for [Easy3D](https://github.com/LiangliangNan/Easy3D).
-
-In case of `undefined reference` when linking with Gurobi have a look at [this post](https://support.gurobi.com/hc/en-us/articles/360039093112-How-do-I-resolve-undefined-reference-errors-while-linking-Gurobi-in-C-)
 
 ### Run City3D
 
