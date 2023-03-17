@@ -18,7 +18,7 @@ done < $input_failed_file
 
 joblog_file="city3d_retry_failed.csv"
 start=$(date +%s.%N)
-timeout_seconds=600
+timeout_seconds=3600
 
 # remove existing files
 rm $joblog_file 2> /dev/null

@@ -43,9 +43,9 @@ for f in os.listdir(results_dir):
         mesh_file = results_dir+f 
         mesh = trimesh.load_mesh(mesh_file)
         
-        trimesh.repair.fix_winding(mesh)
-        trimesh.repair.fix_normals(mesh)
-        trimesh.repair.broken_faces(mesh)
+        # trimesh.repair.fix_winding(mesh)
+        # trimesh.repair.fix_normals(mesh)
+        # trimesh.repair.broken_faces(mesh)
 
         if not (mesh.is_watertight):
                 broken_count+=1

@@ -4,6 +4,8 @@
 # $> . 01_recreate_venv.sh
 # to recreate venv and directly be placed inside it
 
+deactivate > /dev/null 2>&1
+
 VENV_DIR="venv/city3d"
 
 if [ -d "$VENV_DIR" ]
