@@ -43,10 +43,13 @@ data/IGN
 # Do not commit results on default dataset
 data/building_instances/*.obj
 002_result.obj
-# Do not commit params.csv
+# Do not commit log and params files
 *.csv
 *.log
 failed.txt
+failed_generation.txt
 # venv
 venv/
 *.obj
+# python
+__pycache__/

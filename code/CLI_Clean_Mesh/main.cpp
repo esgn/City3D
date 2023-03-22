@@ -2,53 +2,248 @@
 #include <CGAL/Surface_mesh.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_faces.h>
 #include <CGAL/Polygon_mesh_processing/IO/polygon_mesh_io.h>
+#include <CGAL/Polygon_mesh_processing/self_intersections.h>
+#include <CGAL/Polygon_mesh_processing/repair_self_intersections.h>
+#include <CGAL/Polygon_mesh_processing/internal/repair_extra.h>
+#include <CGAL/Polygon_mesh_processing/corefinement.h>
 #include <CGAL/boost/graph/helpers.h>
+#include <CGAL/boost/graph/iterator.h>
 #include <iostream>
 #include <string>
 #include <CGAL/Polygon_mesh_processing/polygon_mesh_to_polygon_soup.h>
 #include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
 #include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
+#include <CGAL/Polygon_mesh_processing/orient_polygon_soup_extension.h>
 #include <CGAL/Polygon_mesh_processing/repair_polygon_soup.h>
 #include <CGAL/Polygon_mesh_processing/orientation.h>
+#include <CGAL/Polygon_mesh_processing/internal/Corefinement/face_graph_utils.h>
+#include <CGAL/Polygon_mesh_processing/internal/Corefinement/predicates.h>
+#include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
+#include <CGAL/Polygon_mesh_processing/manifoldness.h>
+#include <CGAL/Polygon_mesh_processing/border.h>
+#include <CGAL/Polygon_mesh_processing/remesh.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_3 Point;
 typedef CGAL::Surface_mesh<Point> Surface_mesh;
+typedef boost::graph_traits<Surface_mesh>::vertex_descriptor vertex_descriptor;
+typedef boost::graph_traits<Surface_mesh>::halfedge_descriptor halfedge_descriptor;
+typedef boost::graph_traits<Surface_mesh>::edge_descriptor edge_descriptor;
+typedef boost::graph_traits<Surface_mesh>::face_descriptor face_descriptor;
+
 namespace PMP = CGAL::Polygon_mesh_processing;
+namespace NP = CGAL::parameters;
+
+struct Visitor : public PMP::Default_orientation_visitor
+{
+  void non_manifold_edge(std::size_t id1, std::size_t id2, std::size_t nb_poly)
+  {
+    std::cout << "\t The edge " << id1 << ", " << id2 << " is not manifold: " << nb_poly << " incident polygons." << std::endl;
+  }
+  void non_manifold_vertex(std::size_t id, std::size_t nb_cycles)
+  {
+    std::cout << "\t The vertex " << id << " is not manifold: " << nb_cycles << " connected components of vertices in the link." << std::endl;
+  }
+  void duplicated_vertex(std::size_t v1, std::size_t v2)
+  {
+    std::cout << "\t The vertex " << v1 << " has been duplicated, its new id is " << v2 << "." << std::endl;
+  }
+  void vertex_id_in_polygon_replaced(std::size_t p_id, std::size_t i1, std::size_t i2)
+  {
+    std::cout << "\t In the polygon " << p_id << ", the index " << i1 << " has been replaced by " << i2 << "." << std::endl;
+  }
+  void polygon_orientation_reversed(std::size_t p_id)
+  {
+    std::cout << "\t The polygon " << p_id << " has been reversed." << std::endl;
+  }
+};
+
+struct halfedge2edge
+{
+  halfedge2edge(const Surface_mesh &m, std::vector<edge_descriptor> &edges)
+      : m_mesh(m), m_edges(edges)
+  {
+  }
+  void operator()(const halfedge_descriptor &h) const
+  {
+    m_edges.push_back(edge(h, m_mesh));
+  }
+  const Surface_mesh &m_mesh;
+  std::vector<edge_descriptor> &m_edges;
+};
 
 int main(int argc, char *argv[])
 {
-    const std::string filename = (argc > 1) ? argv[1] : CGAL::data_file_path("BATIMENT0000000320898295.obj");
-    const char *outfilename = (argc > 2) ? argv[2] : "BATIMENT0000000320898295_clean.obj";
+  const std::string filename = (argc > 1) ? argv[1] : CGAL::data_file_path("data/IGN/results/BATIMENT0000000320899175.obj");
+  const char *outfilename = (argc > 2) ? argv[2] : "BATIMENT0000000320899175.obj";
 
-    Surface_mesh mesh;
+  std::vector<Point> points;
+  std::vector<std::vector<std::size_t>> polygons;
 
-    if (!PMP::IO::read_polygon_mesh(filename, mesh))
+  // read city3D result as polygon soup 
+
+  if (!CGAL::IO::read_polygon_soup(filename, points, polygons) || points.empty())
+  {
+    std::cerr << "Cannot open file " << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  std::cout << "Reading city3d result as polygon soup" << std::endl;
+  std::cout << "\t " << points.size() << " points imported" << std::endl;
+  std::cout << "\t " << polygons.size() << " polygons imported" << std::endl;
+
+  Visitor visitor;
+
+  PMP::repair_polygon_soup(points, polygons);
+  std::cout << "Trying repair_polygon_soup()" << std::endl;
+  std::cout << "\t " << points.size() << " points after repair_polygon_soup" << std::endl;
+  std::cout << "\t " << polygons.size() << " polygons after repair_polygon_soup" << std::endl;
+  std::cout << "\t Is polygon soup a polygon mesh ? " << PMP::is_polygon_soup_a_polygon_mesh(polygons) << std::endl;
+
+  bool success = PMP::orient_polygon_soup(points, polygons, NP::visitor(visitor));
+  std::cout << "Trying orient_polygon_soup()" << std::endl;
+  std::cout << "\t Is polygon soup a polygon mesh ? " << PMP::is_polygon_soup_a_polygon_mesh(polygons) << std::endl;
+
+  Surface_mesh mesh;
+  if (PMP::is_polygon_soup_a_polygon_mesh(polygons))
+  {
+    std::cout << "Converting polygon_soup to polygon_mesh" << std::endl;
+    PMP::polygon_soup_to_polygon_mesh(points, polygons, mesh);
+  }
+  else
+  {
+    std::cout << "Cannot convert polygon soup to polygon mesh" << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
+  // std::cout << "Before stitch_borders()" << std::endl;
+  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
+  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
+  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
+
+  // PMP::stitch_borders(mesh);
+  // mesh.collect_garbage();
+
+  // std::cout << "stitch_borders() done" << std::endl;
+  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
+  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
+  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
+  // std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  // std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
+  // std::cout << "Before splitting long edges : " << std::endl;
+  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
+  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
+  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
+  // double target_edge_length = 0.5;
+  // std::vector<edge_descriptor> border;
+  // PMP::border_halfedges(faces(mesh), mesh, boost::make_function_output_iterator(halfedge2edge(mesh, border)));
+  // PMP::split_long_edges(border, target_edge_length, mesh);
+  // std::cout << "Splitting long edges done : " << std::endl;
+  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
+  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
+  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
+  // std::cout << " => Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  // std::cout << " => Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
+
+  PMP::triangulate_faces(mesh);
+
+  std::cout << " => Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  std::cout << " => Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
+  // Check for self intersection in the mesh
+  bool intersecting = PMP::does_self_intersect<CGAL::Parallel_if_available_tag>(mesh, CGAL::parameters::vertex_point_map(get(CGAL::vertex_point, mesh)));
+  std::cout << (intersecting ? "There are self-intersections." : "There is no self-intersection.") << std::endl;
+
+  std::vector<std::pair<face_descriptor, face_descriptor>> intersected_faces;
+  PMP::self_intersections<CGAL::Parallel_if_available_tag>(faces(mesh), mesh, std::back_inserter(intersected_faces));
+  std::cout << "\t " << intersected_faces.size() << " pairs of faces intersect." << std::endl;
+
+  // Test export self interecting faces
+  std::vector<Surface_mesh::Vertex_index> verts;
+  int count = 0;
+
+  for (auto face : intersected_faces)
+  {
+    Surface_mesh test;
+    verts.clear();
+    for (auto vh : CGAL::vertices_around_face(mesh.halfedge(face.first), mesh))
     {
-        std::cerr << "Invalid input." << std::endl;
-        return 1;
+      verts.push_back(vh);
     }
+    vertex_descriptor a = test.add_vertex(mesh.point(verts[0]));
+    vertex_descriptor b = test.add_vertex(mesh.point(verts[1]));
+    vertex_descriptor c = test.add_vertex(mesh.point(verts[2]));
+    // vertex_descriptor d = test.add_vertex(mesh.point(verts[3]));
+    test.add_face(a,b,c);
 
-    std::vector<Point> _points;
-    std::vector<std::vector<std::size_t>> _polygons;
-
-    PMP::polygon_mesh_to_polygon_soup(mesh, _points, _polygons);
-    PMP::repair_polygon_soup(_points, _polygons);
-    PMP::orient_polygon_soup(_points, _polygons);
-    PMP::polygon_soup_to_polygon_mesh(_points, _polygons, mesh);
-    PMP::triangulate_faces(mesh);
-
-    if (CGAL::is_closed(mesh))
+    verts.clear();
+    for (auto vh : CGAL::vertices_around_face(mesh.halfedge(face.second), mesh))
     {
-        std::cout << "The obtained mesh is closed" << std::endl;
-        PMP::orient_to_bound_a_volume(mesh);
-    } // Confirm that all faces are triangles.
+      verts.push_back(vh);
+    }
+    a = test.add_vertex(mesh.point(verts[0]));
+    b = test.add_vertex(mesh.point(verts[1]));
+    c = test.add_vertex(mesh.point(verts[2]));
+    // d = test.add_vertex(mesh.point(verts[3]));
+    test.add_face(a,b,c);
+    std::string fname = "pair_"+std::to_string(count)+".obj";
+    std::cout << fname << std::endl;
+    CGAL::IO::write_polygon_mesh(fname, test, CGAL::parameters::stream_precision(17));
+    count+=1;
+  }
+  
 
-    for (boost::graph_traits<Surface_mesh>::face_descriptor f : faces(mesh))
-        if (!CGAL::is_triangle(halfedge(f, mesh), mesh))
-            std::cerr << "Error: non-triangular face left in mesh." << std::endl;
+  // CGAL::IO::write_polygon_mesh("test.obj", test, CGAL::parameters::stream_precision(17));
+  // return EXIT_SUCCESS;
 
-    CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
 
-    return 0;
+  // Check if edge is border
+
+  std::vector<std::pair<halfedge_descriptor, halfedge_descriptor>> hedgepairs;
+  for (auto edge : mesh.edges())
+  {
+    halfedge_descriptor h0 = mesh.halfedge(edge, 0);
+    halfedge_descriptor h1 =  mesh.halfedge(edge, 1);
+
+    if (mesh.is_border(h0) or mesh.is_border(h1))
+    {
+      std::pair<halfedge_descriptor, halfedge_descriptor> hepair;
+      hepair.first = h0;
+      hepair.second = h1;
+      hedgepairs.push_back(hepair);
+    }
+    else
+    {  
+      //std::cout << edge << " is not border" << std::endl;
+    }
+  }
+
+  std::cout << hedgepairs.size() << " borders stitching in progress" << std::endl;
+  PMP::stitch_borders(mesh, hedgepairs);
+  // mesh.collect_garbage();
+  
+  // Check for non manifold vertices
+
+  int counter = 0;
+  for (vertex_descriptor v : vertices(mesh))
+  {
+    if (PMP::is_non_manifold_vertex(v, mesh))
+    {
+      std::cout << "vertex " << v << " is non-manifold" << std::endl;
+      ++counter;
+    }
+  }
+  std::cout << counter << " non-manifold occurrence(s)" << std::endl;
+
+  std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
+  CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+
+  return EXIT_SUCCESS;
 }
