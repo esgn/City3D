@@ -8,12 +8,13 @@ results_dir="data/IGN/results_shifted/"
 output_file="merged_results.obj"
 shifted_output_file="merged_results_shifted.obj"
 
-total_count = 0
-broken_count = 0
-meshes = []
 
 def main():
 
+    total_count = 0
+    broken_count = 0
+    meshes = []
+    
     for f in tqdm(os.listdir(results_dir)):
         mesh_file = results_dir+f 
         mesh = trimesh.load_mesh(mesh_file)
