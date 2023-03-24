@@ -44,9 +44,9 @@ std::string getFileName(const std::string& s) {
 
 int main(int argc, char **argv) {
 
-    std::string input_point_cloud_file = (argc > 1) ? argv[1] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/lidar_crops_as_ply/BATIMENT0000000037533727.ply";
-    std::string input_footprint_file = (argc > 2) ? argv[2] :  std::string(CITY3D_ROOT_DIR) + "/../data/IGN/bdtopo_footprints_as_obj/BATIMENT0000000037533727.obj";
-    std::string output_obj_file = (argc > 3) ? argv[3] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/results/BATIMENT0000000037533727.obj";
+    std::string input_point_cloud_file = (argc > 1) ? argv[1] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/ply_extracts_shifted/BATIMENT0000000320899175.ply";
+    std::string input_footprint_file = (argc > 2) ? argv[2] :  std::string(CITY3D_ROOT_DIR) + "/../data/IGN/obj_footprints_shifted/BATIMENT0000000320899175.obj";
+    std::string output_obj_file = (argc > 3) ? argv[3] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/results/BATIMENT0000000320899175.obj";
 
     // load input point cloud
     std::cout << "loading input point cloud data..." << std::endl;

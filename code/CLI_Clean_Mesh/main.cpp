@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   std::vector<Point> points;
   std::vector<std::vector<std::size_t>> polygons;
 
-  // read city3D result as polygon soup 
+  // read city3D result as polygon soup
 
   if (!CGAL::IO::read_polygon_soup(filename, points, polygons) || points.empty())
   {
@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
   Visitor visitor;
 
   PMP::repair_polygon_soup(points, polygons);
+
   std::cout << "Trying repair_polygon_soup()" << std::endl;
   std::cout << "\t " << points.size() << " points after repair_polygon_soup" << std::endl;
   std::cout << "\t " << polygons.size() << " polygons after repair_polygon_soup" << std::endl;
@@ -119,21 +120,6 @@ int main(int argc, char *argv[])
   std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
   std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
 
-  // std::cout << "Before stitch_borders()" << std::endl;
-  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
-  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
-  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
-
-  // PMP::stitch_borders(mesh);
-  // mesh.collect_garbage();
-
-  // std::cout << "stitch_borders() done" << std::endl;
-  // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
-  // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
-  // std::cout << "\t Number of faces    :\t" << mesh.num_faces() << std::endl;
-  // std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
-  // std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
-
   // std::cout << "Before splitting long edges : " << std::endl;
   // std::cout << "\t Number of vertices  :\t" << mesh.num_vertices() << std::endl;
   // std::cout << "\t Number of halfedges :\t" << mesh.num_halfedges() << std::endl;
@@ -149,7 +135,6 @@ int main(int argc, char *argv[])
   // std::cout << " => Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
   // std::cout << " => Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
 
-
   PMP::triangulate_faces(mesh);
 
   std::cout << " => Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
@@ -162,6 +147,7 @@ int main(int argc, char *argv[])
   std::vector<std::pair<face_descriptor, face_descriptor>> intersected_faces;
   PMP::self_intersections<CGAL::Parallel_if_available_tag>(faces(mesh), mesh, std::back_inserter(intersected_faces));
   std::cout << "\t " << intersected_faces.size() << " pairs of faces intersect." << std::endl;
+  std::cout << "" << std::endl;
 
   // Test export self interecting faces
   std::vector<Surface_mesh::Vertex_index> verts;
@@ -179,7 +165,7 @@ int main(int argc, char *argv[])
     vertex_descriptor b = test.add_vertex(mesh.point(verts[1]));
     vertex_descriptor c = test.add_vertex(mesh.point(verts[2]));
     // vertex_descriptor d = test.add_vertex(mesh.point(verts[3]));
-    test.add_face(a,b,c);
+    test.add_face(a, b, c);
 
     verts.clear();
     for (auto vh : CGAL::vertices_around_face(mesh.halfedge(face.second), mesh))
@@ -190,46 +176,89 @@ int main(int argc, char *argv[])
     b = test.add_vertex(mesh.point(verts[1]));
     c = test.add_vertex(mesh.point(verts[2]));
     // d = test.add_vertex(mesh.point(verts[3]));
-    test.add_face(a,b,c);
-    std::string fname = "pair_"+std::to_string(count)+".obj";
-    std::cout << fname << std::endl;
+    test.add_face(a, b, c);
+    std::string fname = "pair_" + std::to_string(count) + ".obj";
     CGAL::IO::write_polygon_mesh(fname, test, CGAL::parameters::stream_precision(17));
-    count+=1;
+    count += 1;
   }
-  
-
-  // CGAL::IO::write_polygon_mesh("test.obj", test, CGAL::parameters::stream_precision(17));
-  // return EXIT_SUCCESS;
-
 
   // Check if edge is border
 
-  std::vector<std::pair<halfedge_descriptor, halfedge_descriptor>> hedgepairs;
+  std::vector<halfedge_descriptor> border_halfedges;
   for (auto edge : mesh.edges())
   {
     halfedge_descriptor h0 = mesh.halfedge(edge, 0);
-    halfedge_descriptor h1 =  mesh.halfedge(edge, 1);
+    halfedge_descriptor h1 = mesh.halfedge(edge, 1);
 
-    if (mesh.is_border(h0) or mesh.is_border(h1))
+    if (mesh.is_border(h0))
     {
-      std::pair<halfedge_descriptor, halfedge_descriptor> hepair;
-      hepair.first = h0;
-      hepair.second = h1;
-      hedgepairs.push_back(hepair);
+      border_halfedges.push_back(h0);
     }
-    else
-    {  
-      //std::cout << edge << " is not border" << std::endl;
+    else if (mesh.is_border(h1))
+    {
+      border_halfedges.push_back(h1);
     }
   }
 
-  std::cout << hedgepairs.size() << " borders stitching in progress" << std::endl;
-  PMP::stitch_borders(mesh, hedgepairs);
-  // mesh.collect_garbage();
-  
+  std::vector<std::pair<halfedge_descriptor, halfedge_descriptor>> hepairs;
+
+  for (int i = 0; i < border_halfedges.size(); i++)
+  {
+    halfedge_descriptor h = border_halfedges[i];
+    Point source = mesh.point(mesh.source(h));
+    Point target = mesh.point(mesh.target(h));
+    // Kernel::Line_3 line(source, target);
+
+    double dst_min = -1;
+    halfedge_descriptor closest_h;
+    std::cout << "DEALING WITH " << h << std::endl;
+
+    for (int j = 0; j < border_halfedges.size(); j++)
+    {
+      if (i == j)
+        continue;
+      halfedge_descriptor test_h = border_halfedges[j];
+      Point test_source = mesh.point(mesh.source(test_h));
+      Point test_target = mesh.point(mesh.target(test_h));
+      Kernel::Line_3 test_line(test_source, test_target);
+      double source_source_dst = CGAL::squared_distance(source, test_source);
+      double target_target_dst = CGAL::squared_distance(target, test_target);
+      double source_target_dst = CGAL::squared_distance(source, test_target);
+      double target_source_dst = CGAL::squared_distance(target, test_source);
+      // double line_dst = CGAL::squared_distance(line, test_line);
+      // std::cout << "source_source_dst " << source_source_dst << std::endl;
+      // std::cout << "target_target_dst " << target_target_dst << std::endl;
+      // std::cout << "source_target_dst " << source_target_dst << std::endl;
+      // std::cout << "target_source_dst " << target_source_dst << std::endl;
+      // std::cout << "line distance " << line_dst << std::endl;
+      double direct_dist = source_source_dst + target_target_dst;
+      double cross_dist = source_target_dst + target_source_dst;
+      if ((direct_dist < 0.1) || (cross_dist < 0.1))
+      {
+        if ((dst_min == -1) || (direct_dist < dst_min) || (cross_dist < dst_min))
+        {
+          dst_min = std::min(direct_dist, cross_dist);
+          closest_h = test_h;
+        }
+      }
+    }
+    std::pair<halfedge_descriptor, halfedge_descriptor> hp;
+    hp.first = h;
+    hp.second = closest_h;
+    hepairs.push_back(hp);
+    std::cout << "Closest halfedge from " << h << " is " << closest_h << " with distance " << dst_min << std::endl;
+  }
+
+  std::cout <<   hepairs.size() << " borders stitching in progress" << std::endl;
+  PMP::stitch_borders(mesh, hepairs);
+  mesh.collect_garbage();
+
   // Check for non manifold vertices
 
+  PMP::experimental::remove_self_intersections(mesh);
+
   int counter = 0;
+
   for (vertex_descriptor v : vertices(mesh))
   {
     if (PMP::is_non_manifold_vertex(v, mesh))
@@ -238,6 +267,7 @@ int main(int argc, char *argv[])
       ++counter;
     }
   }
+
   std::cout << counter << " non-manifold occurrence(s)" << std::endl;
 
   std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
