@@ -62,16 +62,76 @@ echo "City3D Execution Time: $EXECUTION_TIME"
 # List failed processes #
 #########################
 
-echo "=============================="
-echo "LIST OF FAILED RECONSTRUCTIONS"
-echo "=============================="
+echo "=================="
+echo " FAILED PROCESSES "
+echo "=================="
+
+echo "==============================="
+echo " POINT CLOUD COULD NOT BE READ "
+echo "==============================="
+
+while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
+do
+    if [ "$Exitval" -eq "10" ]
+    then
+        BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
+        echo $BUILDING_FAILURE
+        
+    fi
+done < <(tail -n +2 $JOBLOG_FILE)
+
+echo "============================="
+echo " FOOTPRINT COULD NOT BE READ "
+echo "============================="
+
+while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
+do
+    if [ "$Exitval" -eq "11" ]
+    then
+        BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
+        echo $BUILDING_FAILURE
+        
+    fi
+done < <(tail -n +2 $JOBLOG_FILE)
+
+
+echo "======================="
+echo " RECONSTRUCTION ERRROR "
+echo "======================="
+
+while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
+do
+    if [ "$Exitval" -eq "13" ]
+    then
+        BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
+        echo $BUILDING_FAILURE
+        
+    fi
+done < <(tail -n +2 $JOBLOG_FILE)
+
+echo "========================"
+echo " RECONSTRUCTION TIMEOUT "
+echo "========================"
 
 while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
 do
     if [ "$Exitval" -eq "-1" ]
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
-        echo $BUILDING_FAILURE >> $FAILED_FILE
+        echo $BUILDING_FAILURE
+        
+    fi
+done < <(tail -n +2 $JOBLOG_FILE)
+
+echo "========================"
+echo " COULD NOT WRITE RESULT "
+echo "========================"
+
+while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
+do
+    if [ "$Exitval" -eq "12" ]
+    then
+        BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE
         
     fi

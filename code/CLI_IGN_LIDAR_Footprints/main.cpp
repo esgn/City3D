@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     PointSet *pset = PointSetIO::read(input_point_cloud_file);
     if (!pset) {
         std::cerr << "failed loading point cloud data from file " << input_point_cloud_file << std::endl;
-        return EXIT_FAILURE;
+        return 10;
     }
 
     // load input footprint data
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     Map *footprint = MapIO::read(input_footprint_file);
     if (!footprint) {
         std::cerr << "failed loading footprint data from file " << input_footprint_file << std::endl;
-        return EXIT_FAILURE;
+        return 11;
     }
 
     Reconstruction recon;
@@ -88,14 +88,22 @@ int main(int argc, char **argv) {
     if (status && result->size_of_facets() > 0) {
         if (MapIO::save(output_obj_file, result)) {
             std::cout << "reconstruction result saved to file " << output_obj_file << std::endl;
+            delete pset;
+            delete footprint;
+            delete result;
+            return 0;
         } else
             std::cerr << "failed to save reconstruction result to file " << output_obj_file << std::endl;
+            delete pset;
+            delete footprint;
+            delete result;
+            return 12;
     } else
+    {
         std::cerr << "reconstruction failed" << std::endl;
-
-    delete pset;
-    delete footprint;
-    delete result;
-
-    return EXIT_SUCCESS;
+        delete pset;
+        delete footprint;
+        delete result;
+        return 13;
+    }
 }
