@@ -77,13 +77,13 @@ int main(int argc, char **argv) {
     // Step 3: reconstruction of all the buildings in the scene
     Map *result = new Map;
 
-// #ifdef HAS_GUROBI
-//     std::cout << "reconstructing the buildings (using the Gurobi solver)..." << std::endl;
-//     bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::GUROBI);
-// #else
+#ifdef HAS_GUROBI
+    std::cout << "reconstructing the buildings (using the Gurobi solver)..." << std::endl;
+    bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::GUROBI);
+#else
     std::cout << "reconstructing the buildings (using the SCIP solver)..." << std::endl;
     bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::SCIP);
-// #endif
+#endif
 
     if (status && result->size_of_facets() > 0) {
         if (MapIO::save(output_obj_file, result)) {
