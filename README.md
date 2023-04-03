@@ -2,11 +2,9 @@
 >
 > This project contains first tests with city3D conducted at IGNfab. A series of scripts has been added to test building generation.
 >
-> `00_build_city3d.sh` downloads CGAL and builds the project
+> Create a conda environment with `conda env create -f environment.yml` and execute the bash and Python scripts in order
 >
-> Execute `. 01_recreate_venv.sh` to recreate python venv and enter it directly
 >
-> The remaining scripts prepare datasets, generate building using GNU parallel and merge the results in a single `.obj` file.
 
 
 ### City3D: Large-scale Building Reconstruction from Airborne LiDAR Point Clouds
