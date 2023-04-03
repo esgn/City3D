@@ -10,8 +10,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    pcd_file = "data/IGN/ply_extracts_shifted/"+args.building_id+".ply"
-    footprint_file = "data/IGN/obj_footprints_shifted/"+args.building_id+".obj"
+    pcd_file = "data/IGN/point_cloud_extracts_ply_shifted/"+args.building_id+".ply"
+    footprint_file = "data/IGN/footprints_obj_shifted_fixed/"+args.building_id+".obj"
     plotter = pv.Plotter()
     plotter.background_color = "white"
     pcd = pv.read(pcd_file)

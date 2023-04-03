@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import os,sys
 from tqdm import tqdm
 from statistics import mean

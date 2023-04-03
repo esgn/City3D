@@ -1,0 +1,19 @@
+name: city3d
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - cgal=5.5.2
+  - requests
+  - tqdm
+  - shapely
+  - fiona
+  - pdal
+  - python-pdal
+  - trimesh
+  - pyvista
+  - rasterio
+  - pip:
+    - open3d

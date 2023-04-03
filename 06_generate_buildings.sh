@@ -7,12 +7,11 @@
 # Variables #
 #############
 
-LIDAR_DIR="data/IGN/ply_extracts_shifted/"
-OBJ_DIR="data/IGN/obj_footprints_shifted/"
+LIDAR_DIR="data/IGN/point_cloud_extracts_ply_shifted/"
+OBJ_DIR="data/IGN/footprints_obj_shifted_fixed/"
 RESULTS_DIR="data/IGN/results/"
 INPUT_CSV_FILE="params_generate.csv"
 JOBLOG_FILE="city3d.csv"
-FAILED_FILE="failed_generation.txt"
 TIMEOUT_SECONDS=1200
 
 ##############################
@@ -62,10 +61,6 @@ echo "City3D Execution Time: $EXECUTION_TIME"
 # List failed processes #
 #########################
 
-echo "=================="
-echo " FAILED PROCESSES "
-echo "=================="
-
 echo "==============================="
 echo " POINT CLOUD COULD NOT BE READ "
 echo "==============================="
@@ -105,6 +100,7 @@ do
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE
+        echo $BUILDING_FAILURE >> "reconstrution_error.txt"
         
     fi
 done < <(tail -n +2 $JOBLOG_FILE)
@@ -119,6 +115,7 @@ do
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE
+        echo $BUILDING_FAILURE >> "reconstrution_timeout.txt"
         
     fi
 done < <(tail -n +2 $JOBLOG_FILE)

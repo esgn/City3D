@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
-# This script download CGAL and build City3D executables with header only CGAL
+# This script build City3D executables
 
 BUILD_DIR="Release"
-CGAL_VERSION="5.2.2"
 
-if [ ! -d "CGAL-$CGAL_VERSION" ]
-then
-    # Download CGAL (to be used as header only)
-    wget "https://github.com/CGAL/cgal/releases/download/v$CGAL_VERSION/CGAL-$CGAL_VERSION.tar.xz" .
-    tar -xf CGAL-$CGAL_VERSION.tar.xz
-    rm CGAL-$CGAL_VERSION.tar.xz
-fi
+# If we want to download CGAL and use it as header only
+# CGAL_VERSION="5.2.2"
+# if [ ! -d "CGAL-$CGAL_VERSION" ]
+# then
+#     # Download CGAL (to be used as header only)
+#     wget "https://github.com/CGAL/cgal/releases/download/v$CGAL_VERSION/CGAL-$CGAL_VERSION.tar.xz" .
+#     tar -xf CGAL-$CGAL_VERSION.tar.xz
+#     rm CGAL-$CGAL_VERSION.tar.xz
+# fi
 
 # Recreate build dir
 if [ -d "$BUILD_DIR" ]

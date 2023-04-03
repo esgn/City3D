@@ -44,9 +44,9 @@ std::string getFileName(const std::string& s) {
 
 int main(int argc, char **argv) {
 
-    std::string input_point_cloud_file = (argc > 1) ? argv[1] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/ply_extracts_shifted/BATIMENT0000000320899175.ply";
-    std::string input_footprint_file = (argc > 2) ? argv[2] :  std::string(CITY3D_ROOT_DIR) + "/../data/IGN/obj_footprints_shifted/BATIMENT0000000320899175.obj";
-    std::string output_obj_file = (argc > 3) ? argv[3] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/results/BATIMENT0000000320899175.obj";
+    std::string input_point_cloud_file = (argc > 1) ? argv[1] : std::string(CITY3D_ROOT_DIR) + "/../data/IGN/point_cloud_extracts_ply_shifted/BATIMENT0000000320899175.ply";
+    std::string input_footprint_file = (argc > 2) ? argv[2] :  std::string(CITY3D_ROOT_DIR) + "/../data/IGN/footprints_obj_shifted_fixed/BATIMENT0000000320899175.obj";
+    std::string output_obj_file = (argc > 3) ? argv[3] : std::string(CITY3D_ROOT_DIR) + "/../BATIMENT0000000320899175.obj";
 
     // load input point cloud
     std::cout << "loading input point cloud data..." << std::endl;
@@ -77,13 +77,13 @@ int main(int argc, char **argv) {
     // Step 3: reconstruction of all the buildings in the scene
     Map *result = new Map;
 
-#ifdef HAS_GUROBI
-    std::cout << "reconstructing the buildings (using the Gurobi solver)..." << std::endl;
-    bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::GUROBI);
-#else
+// #ifdef HAS_GUROBI
+//     std::cout << "reconstructing the buildings (using the Gurobi solver)..." << std::endl;
+//     bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::GUROBI);
+// #else
     std::cout << "reconstructing the buildings (using the SCIP solver)..." << std::endl;
     bool status = recon.reconstruct(pset, footprint, result, LinearProgramSolver::SCIP);
-#endif
+// #endif
 
     if (status && result->size_of_facets() > 0) {
         if (MapIO::save(output_obj_file, result)) {

@@ -1,6 +1,0 @@
-trimesh[all]
-pyglet<2
-matplotlib
-tqdm
-open3D
-pyvista
