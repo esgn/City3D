@@ -1,11 +1,15 @@
 > **Note**
 >
-> This project contains first tests with city3D conducted at IGNfab. A series of scripts has been added to test building generation.
+> This project contains first tests with City3D conducted at IGNfab. A series of scripts has been added to test building generation.
 >
-> Create a conda environment with `conda env create -f environment.yml` and execute the bash and Python scripts in order
+> First run `00_rebuild_city3d.sh` to download CGAL and build City3d (we use this script for now as conda is not fully portable for this task)
 >
+> Then create a conda environment with `conda env create -f environment.yml`, activate it with `conda activate city3d` and execute the remaining scripts in order.
 >
-
+> To investigate errors two scripts are provided and may prove useful to do so:
+> * `visualize_pcd_and_footprint.py` to visualize input footprint and point cloud data
+> * `visualize_result.py` to visualize result mesh produced by City3D
+>
 
 ### City3D: Large-scale Building Reconstruction from Airborne LiDAR Point Clouds
 
