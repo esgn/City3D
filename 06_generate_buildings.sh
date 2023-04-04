@@ -7,11 +7,14 @@
 # Variables #
 #############
 
-LIDAR_DIR="data/IGN/point_cloud_extracts_ply_shifted/"
-OBJ_DIR="data/IGN/footprints_obj_shifted_fixed/"
-RESULTS_DIR="data/IGN/results/"
+DATA_DIR="data/IGN/"
+LIDAR_DIR=$DATA_DIR"point_cloud_extracts_ply_shifted/"
+OBJ_DIR=$DATA_DIR"footprints_obj_shifted_fixed/"
+RESULTS_DIR_NAME="results/"
+RESULTS_DIR=$DATA_DIR$RESULTS_DIR_NAME
 INPUT_CSV_FILE="params_generate.csv"
 JOBLOG_FILE="city3d.csv"
+SERVER_DIR="/var/www/html/data/"
 TIMEOUT_SECONDS=1200
 
 ##############################
@@ -139,6 +142,6 @@ done < <(tail -n +2 $JOBLOG_FILE)
 ##############################
 
 TAR_NAME="results_$(date +%s).tar.gz"
-tar czf $TAR_NAME $RESULTS_DIR
-cp $TAR_NAME /var/www/html/data/
+tar czf $TAR_NAME -C $DATA_DIR $RESULTS_DIR_NAME
+cp $TAR_NAME $SERVER_DIR
 rm $TAR_NAME
