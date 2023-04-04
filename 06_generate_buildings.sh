@@ -133,3 +133,12 @@ do
         
     fi
 done < <(tail -n +2 $JOBLOG_FILE)
+
+##############################
+# Create archive and copy it #
+##############################
+
+TAR_NAME="results_$(date +%s).tar.gz"
+tar czf $TAR_NAME $RESULTS_DIR
+cp $TAR_NAME /var/www/html/data/
+rm $TAR_NAME
