@@ -43,7 +43,7 @@ def main():
             z_pcd_min = pipeline.arrays[0][0][2]
         except:
             print("CROPPING ISSUE WITH FOOTPRINT WITH NO BUFFER ON " + cleabs)
-            write_obj_file(os.path.join(args.output_dir,f),vertices, normals, faces)
+            write_obj_file(os.path.join(args.output_dir,cleabs+".obj"),vertices, normals, faces)
             continue
         if z_pcd_min < z_obj:
             count+=1
