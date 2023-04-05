@@ -6,7 +6,7 @@ import fiona
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from shapely.geometry import shape, Polygon, box
-from shapely.geometry.polygon import orient
+from shapely.geometry.polygon import orient, MultiPolygon
 import rasterio as rio
 import requests
 import shutil
@@ -174,6 +174,8 @@ def main():
 
             cleabs = f['properties']['cleabs']
             polygons = shape(f['geometry'])
+            if(type(polygons)==shapely.geometry.polygon.Polygon):
+                polygons = MultiPolygon([polygons])
 
             if len(polygons.geoms) > 1:
                 # TODO: handle polygons with holes
