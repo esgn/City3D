@@ -28,5 +28,5 @@ echo "$SRC_FOOTPRINTS_DIR recreated"
 
 mkdir -p $SRC_LIDAR_DIR
 cd $SRC_LIDAR_DIR
-cp $SRC_LIDAR_FILE .
+cp -r $SRC_LIDAR_FILE .
 echo "$SRC_LIDAR_DIR recreated"
