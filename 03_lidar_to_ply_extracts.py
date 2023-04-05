@@ -37,6 +37,8 @@ def get_footprints_bbox(input_footprints, footprint_buffer):
         for f in src:
             cleabs = f['properties']['cleabs']
             polygons = shape(f['geometry'])
+            if(type(polygons)==Polygon):
+                polygons = MultiPolygon([polygons])
             if len(polygons.geoms) > 1:
                 i = 0
                 for polygon in polygons.geoms:
