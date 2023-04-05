@@ -3,7 +3,7 @@
 # To run this script a mount point /mnt/IGNFAB must be present locally
 # This scripts creates all the necessary directories for the rest of the pipeline
 
-MOUNT_POINT="/mnt/IGNFAB/CITY3D_INPUT/"
+MOUNT_POINT="/mnt/IGNFAB/CITY3D_INPUT/Marseille"
 SOURCE_LIDAR_FOLDER="zone_urbaine/"
 SOURCE_FOOTPRINTS_FILE="footprints.gpkg"
 SRC_LIDAR_FILE=$MOUNT_POINT$SOURCE_LIDAR_FILE
