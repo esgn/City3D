@@ -5,7 +5,7 @@ import os, sys
 import fiona
 import argparse
 import shutil
-from shapely.geometry import shape, box
+from shapely.geometry import shape, box, Polygon, MultiPolygon
 import pdal
 import time
 import glob
