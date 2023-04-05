@@ -5,8 +5,8 @@ import os, sys
 import fiona
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-from shapely.geometry import shape, Polygon, box
-from shapely.geometry.polygon import orient, MultiPolygon
+from shapely.geometry import shape, Polygon, box, MultiPolygon
+from shapely.geometry.polygon import orient
 import rasterio as rio
 import requests
 import shutil
