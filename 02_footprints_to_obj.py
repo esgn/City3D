@@ -174,7 +174,7 @@ def main():
 
             cleabs = f['properties']['cleabs']
             polygons = shape(f['geometry'])
-            if(type(polygons)==shapely.geometry.polygon.Polygon):
+            if(type(polygons)==Polygon):
                 polygons = MultiPolygon([polygons])
 
             if len(polygons.geoms) > 1:
