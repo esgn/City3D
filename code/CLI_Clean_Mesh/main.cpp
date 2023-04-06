@@ -61,8 +61,9 @@ struct Visitor : public PMP::Default_orientation_visitor
 int main(int argc, char *argv[])
 {
   // input parameters
-  const std::string filename = (argc > 1) ? argv[1] : CGAL::data_file_path("data/IGN/results/BATIMENT0000000320899175.obj");
-  const char *outfilename = (argc > 2) ? argv[2] : "BATIMENT0000000320899175_clean.obj";
+  const std::string filename = (argc > 1) ? argv[1] : CGAL::data_file_path("data/IGN/results_footprint_fixed/BATIMENT0000000037535513.obj");
+  const char *outfilename = (argc > 2) ? argv[2] : "BATIMENT0000000037535513_cleaned.obj";
+  const int output_interesecting_faces = (argc > 3) ? std::stoi(argv[3]) : 0;
 
   std::vector<Point> points;
   std::vector<std::vector<std::size_t>> polygons;
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
   if (!CGAL::IO::read_polygon_soup(filename, points, polygons) || points.empty())
   {
     std::cerr << "Cannot open file " << std::endl;
-    return EXIT_FAILURE;
+    return 1;
   }
   std::cout << "Reading city3d result as polygon soup" << std::endl;
   std::cout << "\t " << points.size() << " points imported" << std::endl;
@@ -100,15 +101,15 @@ int main(int argc, char *argv[])
   else
   {
     std::cout << "Cannot convert polygon soup to polygon mesh" << std::endl;
-    return EXIT_FAILURE;
+    return 2;
   }
   std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
   std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
 
   // triangulate mesh faces
-  PMP::triangulate_faces(mesh);
-  std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
-  std::cout << "=> Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+  // PMP::triangulate_faces(mesh);
+  // std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  // std::cout << "=> Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
 
   // Check for self intersections in the mesh
   bool intersecting = PMP::does_self_intersect<CGAL::Parallel_if_available_tag>(mesh, CGAL::parameters::vertex_point_map(get(CGAL::vertex_point, mesh)));
@@ -118,10 +119,66 @@ int main(int argc, char *argv[])
   std::cout << "\t " << intersected_faces.size() << " pairs of faces intersect." << std::endl;
   std::cout << "" << std::endl;
 
+  if (output_interesecting_faces)
+  {
+        // Test export self interecting faces
+    std::vector<Surface_mesh::Vertex_index> verts;
+    std::vector<Surface_mesh::Vertex_index> vd;
+
+    int count = 0;
+
+    for (auto face : intersected_faces)
+    {
+      Surface_mesh test;
+
+      verts.clear();
+      vd.clear();
+
+      for (auto vh : CGAL::vertices_around_face(mesh.halfedge(face.first), mesh))
+      {
+        verts.push_back(vh);
+      }
+
+      for (auto v : verts)
+      {
+        vd.push_back(test.add_vertex(mesh.point(v))) ;
+      }
+
+      test.add_face(vd);
+
+      verts.clear();
+      vd.clear();
+
+      for (auto vh : CGAL::vertices_around_face(mesh.halfedge(face.second), mesh))
+      {
+        verts.push_back(vh);
+      }
+
+      for (auto v : verts)
+      {
+        vd.push_back(test.add_vertex(mesh.point(v))) ;
+      }
+
+      test.add_face(vd);
+
+      std::string fname = "pair_" + std::to_string(count) + ".obj";
+      CGAL::IO::write_polygon_mesh(fname, test, CGAL::parameters::stream_precision(17));
+      count += 1;
+    }
+  }
+
   std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
   std::cout << "=> Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
   
-  CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
-
-  return EXIT_SUCCESS;
+  if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
+  {
+    PMP::orient_to_bound_a_volume(mesh);
+    CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+    return 0;
+  }
+  else
+  {
+    return 3;
+  }
+  
 }

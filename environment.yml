@@ -14,5 +14,6 @@ dependencies:
   - trimesh
   - pyvista
   - rasterio
+  - scikit-spatial 
   - pip:
     - open3d

@@ -3,7 +3,6 @@
 
 import open3d as o3d
 import os
-from statistics import mean
 from tqdm import tqdm
 from utils import *
 import argparse

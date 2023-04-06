@@ -4,8 +4,8 @@
 # Variables #
 #############
 
-RESULTS_DIR="data/IGN/results/"
-CLEANUP_OUTPUT_DIR="data/IGN/results_cleaned/"
+RESULTS_DIR="data/IGN/results_cleaned/"
+CLEANUP_OUTPUT_DIR="data/IGN/results_fixed_with_cgal/"
 INPUT_CSV_FILE="params_cleanup.csv"
 JOBLOG_FILE="cleanup.csv"
 FAILED_FILE="failed_cleanup.txt"
@@ -63,7 +63,7 @@ echo "======================"
 
 while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
 do
-    if [ "$Exitval" -eq "-1" ]
+    if [ "$Exitval" -ne "0" ]
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE >> $FAILED_FILE
