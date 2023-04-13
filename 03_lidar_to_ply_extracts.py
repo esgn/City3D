@@ -35,7 +35,13 @@ def get_footprints_bbox(input_footprints, footprint_buffer):
     footprints_bbox_as_polygons={}
     with fiona.open(input_footprints) as src:
         for f in src:
-            cleabs = f['properties']['cleabs']
+            
+            id=""
+            try:
+                id = f['properties']['cleabs']
+            except:
+                id = f['properties']['BU_id']
+
             polygons = shape(f['geometry'])
             if(type(polygons)==Polygon):
                 polygons = MultiPolygon([polygons])
@@ -43,11 +49,11 @@ def get_footprints_bbox(input_footprints, footprint_buffer):
                 i = 0
                 for polygon in polygons.geoms:
                     bbox = bufferize_and_get_bounds(polygon, footprint_buffer)
-                    footprints_bbox_as_polygons[cleabs+"_"+str(i)] = bbox
+                    footprints_bbox_as_polygons[id+"_"+str(i)] = bbox
                     i+=1
             else:
                 bbox = bufferize_and_get_bounds(polygons, footprint_buffer)
-                footprints_bbox_as_polygons[cleabs] = bbox
+                footprints_bbox_as_polygons[id] = bbox
     return footprints_bbox_as_polygons
 
 def crop_las(input_pointcloud, features_bbox_as_polygons, output_dir):
