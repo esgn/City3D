@@ -171,8 +171,11 @@ def main():
 
         # For all polygons in gpgk file
         for f in tqdm(source, position=0, leave=True):
-
-            cleabs = f['properties']['cleabs']
+            id=""
+            try:
+                id = f['properties']['cleabs']
+            except:
+                id = f['properties']['BU_id']
             polygons = shape(f['geometry'])
             if(type(polygons)==Polygon):
                 polygons = MultiPolygon([polygons])
@@ -181,11 +184,11 @@ def main():
                 # TODO: handle polygons with holes
                 i = 0
                 for polygon in polygons.geoms:
-                    tqdm.write("[WARNING] Dealing with true multipolygon on " + cleabs)
-                    process_building_polygon(polygon, cleabs+"_"+str(i), args)
+                    tqdm.write("[WARNING] Dealing with true multipolygon on " + id)
+                    process_building_polygon(polygon, id+"_"+str(i), args)
                     i += 1
             else:
-                process_building_polygon(polygons.geoms[0], cleabs, args)
+                process_building_polygon(polygons.geoms[0], id, args)
 
         # cleanup
         os.remove(temporary_tif)

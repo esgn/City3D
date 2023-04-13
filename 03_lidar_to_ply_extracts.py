@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument("--footprint_buffer", "-b", default=5,
                         help="Buffer to add to each footprint when cropping")
     parser.add_argument("--input_pointcloud", "-p",
-                        help="Input Pointcloud (las or laz)", default="data/IGN/source_point_cloud/Marseille/zone_urbaine/")
+                        help="Input Pointcloud (las or laz)", default="data/IGN/source_point_cloud/lidar.las")
     parser.add_argument("--output_dir", "-o",
                         help="Output directory for ply extracts", default="data/IGN/point_cloud_extracts_ply")
     return parser.parse_args()
@@ -75,9 +75,10 @@ if __name__ == "__main__":
     recreate_dir(args.output_dir)
     sorted_bbox = dict(sorted(features_bbox_as_polygons.items()))
 
-    lidar_files = glob.glob(args.input_pointcloud+"*.las")
+    # lidar_files = glob.glob(args.input_pointcloud+"*.las")
 
-    list(map(lambda file:crop_las(file, sorted_bbox, args.output_dir), lidar_files))
+    # list(map(lambda file:crop_las(file, sorted_bbox, args.output_dir), lidar_files))
+    crop_las(args.input_pointcloud, sorted_bbox, args.output_dir)
 
     rename_extracts(args.output_dir, sorted_bbox)
     print(f"processing time: {time.time() - t0}")
