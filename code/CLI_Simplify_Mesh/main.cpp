@@ -21,7 +21,7 @@ int main(int argc, char** argv){
     // Read the input
     const std::string filename = (argc > 1) ? argv[1] : CGAL::data_file_path("data/IGN/test.obj");
     std::cout << "Reading " << filename << "..." << std::endl;
-    const char *outfilename = (argc > 2) ? argv[2] : "data/IGN/result/test_simplified.obj";
+    const char *outfilename = (argc > 2) ? argv[2] : "data/IGN/test_simplified.obj";
 
     Mesh mesh;
     if(!PMP::IO::read_polygon_mesh(filename, mesh) || is_empty(mesh) || !is_triangle_mesh(mesh))
