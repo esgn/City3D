@@ -5,10 +5,11 @@
 BUILD_DIR="Release"
 
 # If we want to download CGAL and use it as header only
-CGAL_VERSION="5.2.2"
+CGAL_VERSION="5.5.2"
 if [ ! -d "CGAL-$CGAL_VERSION" ]
 then
     # Download CGAL (to be used as header only)
+    echo "toto"
     wget "https://github.com/CGAL/cgal/releases/download/v$CGAL_VERSION/CGAL-$CGAL_VERSION.tar.xz" .
     tar -xf CGAL-$CGAL_VERSION.tar.xz
     rm CGAL-$CGAL_VERSION.tar.xz
