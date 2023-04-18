@@ -33,8 +33,8 @@ int main(int argc, char** argv){
     std::cout << "Input: " << num_vertices(mesh) << " vertices, " << num_faces(mesh) << " faces" << std::endl;
 
     // Compute the alpha and offset values
-    const double relative_alpha = (argc > 2) ? std::stod(argv[2]) : 20.;
-    const double relative_offset = (argc > 3) ? std::stod(argv[3]) : 600.;
+    const double relative_alpha = 20.;
+    const double relative_offset = 600.;
 
     CGAL::Bbox_3 bbox = CGAL::Polygon_mesh_processing::bbox(mesh);
     const double diag_length = std::sqrt(CGAL::square(bbox.xmax() - bbox.xmin()) +
