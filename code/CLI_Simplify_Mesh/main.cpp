@@ -1,17 +1,18 @@
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Simple_cartesian.h>
 #include <CGAL/Surface_mesh.h>
-#include <CGAL/alpha_wrap_3.h>
-#include <CGAL/Polygon_mesh_processing/bbox.h>
-#include <CGAL/Polygon_mesh_processing/IO/polygon_mesh_io.h>
-#include <CGAL/Real_timer.h>
+#include <CGAL/Surface_mesh_simplification/edge_collapse.h>
+#include <CGAL/Surface_mesh_simplification/Policies/Edge_collapse/Count_ratio_stop_predicate.h>
+
 #include <iostream>
 #include <string>
 
-namespace AW3 = CGAL::Alpha_wraps_3;
-namespace PMP = CGAL::Polygon_mesh_processing;
 
-using K = CGAL::Exact_predicates_inexact_constructions_kernel;
-using Point_3 = K::Point_3;
+namespace PMP = CGAL::Polygon_mesh_processing;
+namespace SMS = CGAL::Surface_mesh_simplification;
+
+typedef CGAL::Simple_cartesian<double>               Kernel;
+typedef Kernel::Point_3                              Point_3;
+typedef CGAL::Surface_mesh<Point_3>                  Surface_mesh;
 
 using Mesh = CGAL::Surface_mesh<Point_3>;
 
@@ -29,34 +30,26 @@ int main(int argc, char** argv){
         std::cerr << "Invalid input." << std::endl;
         return EXIT_FAILURE;
     }
+    if(!CGAL::is_triangle_mesh(mesh))
+    {
+        std::cerr << "Input geometry is not triangulated." << std::endl;
+        return EXIT_FAILURE;
+    }
 
     std::cout << "Input: " << num_vertices(mesh) << " vertices, " << num_faces(mesh) << " faces" << std::endl;
 
-    // Compute the alpha and offset values
-    const double relative_alpha = 20.;
-    const double relative_offset = 600.;
-
-    CGAL::Bbox_3 bbox = CGAL::Polygon_mesh_processing::bbox(mesh);
-    const double diag_length = std::sqrt(CGAL::square(bbox.xmax() - bbox.xmin()) +
-                                        CGAL::square(bbox.ymax() - bbox.ymin()) +
-                                        CGAL::square(bbox.zmax() - bbox.zmin()));
-    const double alpha = diag_length / relative_alpha;
-    const double offset = diag_length / relative_offset;
-
-    // Construct the wrap
-    CGAL::Real_timer t;
-    t.start();
-    Mesh wrap;
-    CGAL::alpha_wrap_3(mesh, alpha, offset, wrap);
-
-    t.stop();
-    std::cout << "Result: " << num_vertices(wrap) << " vertices, " << num_faces(wrap) << " faces" << std::endl;
-    std::cout << "Took " << t.time() << " s." << std::endl;
+    // In this example, the simplification stops when the number of undirected edges
+    // drops below 10% of the initial count
+    double stop_ratio = (argc > 2) ? std::stod(argv[2]) : 0.1;
+    SMS::Count_ratio_stop_predicate<Surface_mesh> stop(stop_ratio);
+    
+    int r = SMS::edge_collapse(mesh, stop);
+    std::cout << "\nFinished!\n" << r << " edges removed.\n" << mesh.number_of_edges() << " final edges.\n";
 
     // Save the result
     
     std::cout << "Writing to " << outfilename << std::endl;
-    CGAL::IO::write_polygon_mesh(outfilename, wrap, CGAL::parameters::stream_precision(17));
+    CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
 
 
     return EXIT_SUCCESS;
