@@ -4,8 +4,8 @@
 # Variables #
 #############
 
-RESULTS_DIR="data/IGN/results_shifted/"
-SIMPLIFICATION_OUTPUT_DIR="data/IGN/results_simplified/"
+RESULTS_DIR="data/IGN/results_cleaned/"
+SIMPLIFICATION_OUTPUT_DIR="data/IGN/results_wrapped/"
 INPUT_CSV_FILE="params_simplify.csv"
 JOBLOG_FILE="simplify.csv"
 FAILED_FILE="failed_simplification.txt"
