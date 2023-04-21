@@ -42,7 +42,7 @@ int main(int argc, char** argv){
 
     // In this example, the simplification stops when the number of undirected edges
     // drops below 10% of the initial count
-    double stop_ratio = (argc > 2) ? std::stod(argv[2]) : 0.8;
+    double stop_ratio = (argc > 2) ? std::stod(argv[2]) : 0.02;
     SMS::Count_ratio_stop_predicate<Surface_mesh> stop(stop_ratio);
     
     int r = SMS::edge_collapse(mesh, stop);
