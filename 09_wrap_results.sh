@@ -47,7 +47,7 @@ rm $FAILED_FILE 2> /dev/null
 START=$(date +%s.%N)
 
 # Launch cleanup in parallel jobs to speed things up
-cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE ./Release/bin/CLI_Simplify_Mesh {1} {2} >> /dev/null 2>&1  
+cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE ./Release/bin/CLI_Alpha_Wrapper {1} {2} >> /dev/null 2>&1  
 
 DURATION=$(echo "$(date +%s.%N) - $START" | bc)
 EXECUTION_TIME=`printf "%.2f seconds" ${duration/./,}`
