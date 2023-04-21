@@ -10,7 +10,7 @@ import shutil
 # This scripts takes the building reconstructed by City3D
 # and shift to them to their original position
 
-results_dir="data/IGN/results_cleaned/"
+results_dir="data/IGN/results_simplified/"
 output_dir="data/IGN/results_shifted/"
 origins_dir="data/IGN/origin_shift/"
        

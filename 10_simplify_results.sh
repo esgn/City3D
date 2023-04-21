@@ -4,11 +4,11 @@
 # Variables #
 #############
 
-RESULTS_DIR="data/IGN/results_cleaned/"
-SIMPLIFICATION_OUTPUT_DIR="data/IGN/results_wrapped/"
-INPUT_CSV_FILE="params_wrap.csv"
-JOBLOG_FILE="wrap.csv"
-FAILED_FILE="failed_wrapping.txt"
+RESULTS_DIR="data/IGN/results_wrapped/"
+SIMPLIFICATION_OUTPUT_DIR="data/IGN/results_simplified/"
+INPUT_CSV_FILE="params_simplify.csv"
+JOBLOG_FILE="simplify.csv"
+FAILED_FILE="failed_simplification.txt"
 TIMEOUT_SECONDS=30
 
 ##############################
