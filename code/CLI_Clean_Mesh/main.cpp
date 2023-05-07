@@ -106,6 +106,11 @@ int main(int argc, char *argv[])
   std::cout << "\t Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
   std::cout << "\t Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
 
+  // stitching borders
+  PMP::stitch_borders(mesh);
+  std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
+  std::cout << "=> Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
+
   // triangulate mesh faces
   // PMP::triangulate_faces(mesh);
   // std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
@@ -121,7 +126,7 @@ int main(int argc, char *argv[])
 
   if (output_interesecting_faces)
   {
-        // Test export self interecting faces
+    // Test export self interecting faces
     std::vector<Surface_mesh::Vertex_index> verts;
     std::vector<Surface_mesh::Vertex_index> vd;
 
@@ -141,7 +146,7 @@ int main(int argc, char *argv[])
 
       for (auto v : verts)
       {
-        vd.push_back(test.add_vertex(mesh.point(v))) ;
+        vd.push_back(test.add_vertex(mesh.point(v)));
       }
 
       test.add_face(vd);
@@ -156,7 +161,7 @@ int main(int argc, char *argv[])
 
       for (auto v : verts)
       {
-        vd.push_back(test.add_vertex(mesh.point(v))) ;
+        vd.push_back(test.add_vertex(mesh.point(v)));
       }
 
       test.add_face(vd);
@@ -167,9 +172,6 @@ int main(int argc, char *argv[])
     }
   }
 
-  std::cout << "=> Is the mesh closed ? " << CGAL::is_closed(mesh) << std::endl;
-  std::cout << "=> Is the mesh valid ? " << CGAL::is_valid(mesh) << std::endl;
-  
   if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
   {
     PMP::orient_to_bound_a_volume(mesh);
@@ -180,5 +182,4 @@ int main(int argc, char *argv[])
   {
     return 3;
   }
-  
 }
