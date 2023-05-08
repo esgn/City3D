@@ -5,7 +5,7 @@ import os, sys
 import fiona
 import argparse
 import shutil
-from shapely.geometry import shape, box
+from shapely.geometry import shape, box, Polygon, MultiPolygon
 import pdal
 import time
 
@@ -34,8 +34,20 @@ def get_footprints_bbox(input_footprints, footprint_buffer):
     footprints_bbox_as_polygons={}
     with fiona.open(input_footprints) as src:
         for f in src:
-            cleabs = f['properties']['cleabs']
+
+            # Will work for BDUNI and PROD3D datasets
+            cleabs=""
+            try:
+                cleabs = f['properties']['cleabs']
+            except:
+                cleabs = f['properties']['BU_id']
+
             polygons = shape(f['geometry'])
+
+            # Handle everything as multipolygon for now
+            if(type(polygons)==Polygon):
+                polygons = MultiPolygon([polygons])
+
             if len(polygons.geoms) > 1:
                 i = 0
                 for polygon in polygons.geoms:

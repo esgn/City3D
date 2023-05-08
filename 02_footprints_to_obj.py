@@ -5,7 +5,7 @@ import os, sys
 import fiona
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-from shapely.geometry import shape, Polygon, box
+from shapely.geometry import shape, Polygon, box, MultiPolygon
 from shapely.geometry.polygon import orient
 import rasterio as rio
 import requests
@@ -172,8 +172,18 @@ def main():
         # For all polygons in gpgk file
         for f in tqdm(source, position=0, leave=True):
 
-            cleabs = f['properties']['cleabs']
+            # Will work for BDUNI and PROD3D datasets
+            cleabs=""
+            try:
+                cleabs = f['properties']['cleabs']
+            except:
+                cleabs = f['properties']['BU_id']
+
             polygons = shape(f['geometry'])
+
+            # Handle everything as multipolygon for now
+            if(type(polygons)==Polygon):
+                polygons = MultiPolygon([polygons])
 
             if len(polygons.geoms) > 1:
                 # TODO: handle polygons with holes
