@@ -38,6 +38,8 @@ Release
 # IGNF additions
 # Do not commit CGAL directory if it exists
 CGAL-*/
+# Do not commit Easy3D directory if it exists
+Easy3D-*/
 # Do not commit IGN test datasets
 data/IGN
 # Do not commit City3d results on default dataset

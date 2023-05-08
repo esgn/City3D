@@ -12,7 +12,7 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser("Shift back the results to Lambert 93 coordinates")
     parser.add_argument("--results_dir", "-r",
-                        help="Input directory containing fixed city3d results", default="data/IGN/results_fixed_with_cgal")
+                        help="Input directory containing fixed city3d results", default="data/IGN/results")
     parser.add_argument("--origins_dir", "-s",
                         help="Input directory containing origin files", default="data/IGN/origin_shift")
     parser.add_argument("--output_dir", "-o",

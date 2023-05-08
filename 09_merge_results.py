@@ -13,9 +13,9 @@ def parse_args():
     parser.add_argument("--results_dir", "-r",
                         help="Input directory containing fixed city3d results", default="data/IGN/results_shifted/")
     parser.add_argument("--output_file", "-o",
-                        help="Output file containing all results", default="merged_results.obj")
+                        help="Output file containing all results", default="data/IGN/merged_results.obj")
     parser.add_argument("--shifted_output_file", "-s",
-                        help="Output file containing all results in local coordinates", default="merged_results_shifted.obj")
+                        help="Output file containing all results in local coordinates", default="data/IGN/merged_results_shifted.obj")
     return parser.parse_args()    
 
 def main():

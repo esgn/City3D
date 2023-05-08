@@ -46,6 +46,8 @@ def main():
         center = pcd.get_center()
         # We keep only x and y center as we dont want to shift altitudes
         center[2] = 0
+        # We want to shift with round values to avoid rounding issues
+        center = [float(round(c)) for c in center]
         # shift point cloud
         pcd.translate(center*-1, relative=True)
         # write resulting point cloud with global shift

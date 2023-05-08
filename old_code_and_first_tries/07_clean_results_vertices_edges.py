@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument("--delta_point_in_line", "-p", 
                         help="Maximum distance for considering that a point belongs to a line", default="1e-6")#7
     parser.add_argument("--delta_coordinates", "-d", 
-                        help="If the distance between two coordinates are under this threshold they are considered as the same", default="1e-6")#8
+                        help="If the distance between two coordinates are under this threshold they are considered as the same", default="1e-8")#8
     return parser.parse_args()
 
 # distance 3d point to 3d line
