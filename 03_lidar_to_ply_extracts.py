@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument("--footprint_buffer", "-b", default=5,
                         help="Buffer to add to each footprint when cropping")
     parser.add_argument("--input_pointcloud", "-p",
-                        help="Input Pointcloud (las or laz)", default="data/IGN/source_point_cloud/PTS_LAMB93_IGN69_0923_6308.laz")
+                        help="Input Pointcloud (las or laz)", default="data/IGN/source_point_cloud/lidar.las")
     parser.add_argument("--output_dir", "-o",
                         help="Output directory for ply extracts", default="data/IGN/point_cloud_extracts_ply")
     return parser.parse_args()
