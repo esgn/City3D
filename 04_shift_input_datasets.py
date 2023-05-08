@@ -4,6 +4,7 @@
 import open3d as o3d
 import os
 from tqdm import tqdm
+import numpy as np
 from utils import *
 import argparse
 
@@ -48,6 +49,8 @@ def main():
         center[2] = 0
         # We want to shift with round values to avoid rounding issues
         center = [float(round(c)) for c in center]
+        # make sure center is numpy.ndarray[numpy.float64[3, 1]]
+        center = np.array(center,  dtype='float64')
         # shift point cloud
         pcd.translate(center*-1, relative=True)
         # write resulting point cloud with global shift
