@@ -21,6 +21,7 @@ TIMEOUT_FILE="reconstruction_timeout.txt"
 ERROR_FILE="reconstruction_error.txt"
 SERVER_DIR="/var/www/html/data/"
 TIMEOUT_SECONDS=1200
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ##############################
 # Parameters file generation #
@@ -149,6 +150,6 @@ done < <(tail -n +2 $JOBLOG_FILE)
 ##############################
 
 TAR_NAME="results_$(date +%s).tar.gz"
-tar czf $TAR_NAME $RESULTS_DIR $ORIGIN_DIR $JOBLOG_FILE $ERROR_FILE $TIMEOUT_FILE
+tar czf $TAR_NAME -C $DATA_DIR $RESULTS_DIR_NAME $ORIGIN_DIR_NAME -C $SCRIPT_DIR $JOBLOG_FILE $ERROR_FILE $TIMEOUT_FILE
 cp $TAR_NAME $SERVER_DIR
 rm $TAR_NAME
