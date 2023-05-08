@@ -7,13 +7,18 @@
 # Variables #
 #############
 
+EXECUTABLE_PATH="./Release/bin/CLI_IGN_LIDAR_Footprints"
 DATA_DIR="data/IGN/"
 LIDAR_DIR=$DATA_DIR"point_cloud_extracts_ply_shifted/"
 OBJ_DIR=$DATA_DIR"footprints_obj_shifted_fixed/"
 RESULTS_DIR_NAME="results/"
+ORIGIN_DIR_NAME="origin_shift/"
 RESULTS_DIR=$DATA_DIR$RESULTS_DIR_NAME
+ORIGIN_DIR=$DATA_DIR$ORIGIN_DIR_NAME
 INPUT_CSV_FILE="params_generate.csv"
 JOBLOG_FILE="city3d.csv"
+TIMEOUT_FILE="reconstruction_timeout.txt"
+ERROR_FILE="reconstruction_error.txt"
 SERVER_DIR="/var/www/html/data/"
 TIMEOUT_SECONDS=1200
 
@@ -50,11 +55,13 @@ mkdir $RESULTS_DIR
 # remove existing log files
 rm $JOBLOG_FILE 2> /dev/null
 rm $FAILED_FILE 2> /dev/null
+rm $TIMEOUT_FILE 2> /dev/null
+rm $ERROR_FILE 2> /dev/null
 
 START=$(date +%s.%N)
 
 # Launch city3D in parallel jobs to speed things up
-cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE ./Release/bin/CLI_IGN_LIDAR_Footprints {1} {2} {3} >> /dev/null 2>&1  
+cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE $EXECUTABLE_PATH {1} {2} {3} >> /dev/null 2>&1  
 
 DURATION=$(echo "$(date +%s.%N) - $START" | bc)
 EXECUTION_TIME=`printf "%.2f seconds" ${DURATION/./,}`
@@ -103,7 +110,7 @@ do
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE
-        echo $BUILDING_FAILURE >> "reconstrution_error.txt"
+        echo $BUILDING_FAILURE >> $ERROR_FILE
         
     fi
 done < <(tail -n +2 $JOBLOG_FILE)
@@ -118,7 +125,7 @@ do
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE
-        echo $BUILDING_FAILURE >> "reconstrution_timeout.txt"
+        echo $BUILDING_FAILURE >> $TIMEOUT_FILE
         
     fi
 done < <(tail -n +2 $JOBLOG_FILE)
@@ -142,6 +149,6 @@ done < <(tail -n +2 $JOBLOG_FILE)
 ##############################
 
 TAR_NAME="results_$(date +%s).tar.gz"
-tar czf $TAR_NAME -C $DATA_DIR $RESULTS_DIR_NAME
+tar czf $TAR_NAME $RESULTS_DIR $ORIGIN_DIR $JOBLOG_FILE $ERROR_FILE $TIMEOUT_FILE
 cp $TAR_NAME $SERVER_DIR
 rm $TAR_NAME
