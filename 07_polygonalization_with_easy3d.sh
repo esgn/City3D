@@ -5,7 +5,7 @@
 #############
 
 EXECUTABLE_PATH="./CLI_Easy3D_Fix/Release/CLI_Easy3D_Fix"
-CITY3D_RESULTS_DIR="data/IGN/results_fixed_with_cgal/"
+CITY3D_RESULTS_DIR="data/IGN/results/"
 FIX_OUTPUT_DIR="data/IGN/results_fixed_with_easy3d/"
 INPUT_CSV_FILE="params_easy3d_fix.csv"
 JOBLOG_FILE="easy3d_fix.csv"

@@ -40,8 +40,8 @@ def main():
     combined.export(args.output_file)
 
     vertices, normals, faces = read_obj_file(args.output_file)
-    x_mean = mean([v[0] for v in vertices])
-    y_mean = mean([v[1] for v in vertices])
+    x_mean = float(round(mean([v[0] for v in vertices])))
+    y_mean = float(round(mean([v[1] for v in vertices])))
     vertices = [[v[0]-x_mean, v[1]-y_mean, v[2]] for v in vertices]
 
     write_obj_file(args.shifted_output_file, vertices, normals, faces)
