@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument("--output_dir", "-o",
                         help="Output directory for fixed results", default="data/IGN/results_cleaned")
     parser.add_argument("--delta_point_in_line", "-p", 
-                        help="Maximum distance for considering that a point belongs to a line", default="1e-6")#7
+                        help="Maximum distance for considering that a point belongs to a line", default="1e-4")#7
     parser.add_argument("--delta_coordinates", "-d", 
                         help="If the distance between two coordinates are under this threshold they are considered as the same", default="1e-8")#8
     return parser.parse_args()
@@ -188,12 +188,12 @@ def main():
             else:
                 new_faces.append(face)
 
-        # Only merge vertex with edges on the footprint face
+        # # Only merge vertex with edges on the footprint face
         # new_faces = faces.copy()
         # face = faces[-1]
         # candidate_vertices,candidate_count = get_candidate_vertices(face, vertices, float(args.delta_point_in_line))
         # # print(candidate_count)
-        # if(len(candidate_vertices)>0):883 buildings only if cleanup_coordinates is not called before this step
+        # if(len(candidate_vertices)>0):
         #     new_face,vertices_added = add_candidates_to_face(face,candidate_vertices)
         #     # print(vertices_added)
         #     new_faces[-1] = (new_face)
