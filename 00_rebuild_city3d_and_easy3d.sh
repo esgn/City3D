@@ -3,7 +3,7 @@
 # This script build City3D and Easy3D executables
 
 BUILD_DIR="Release"
-CGAL_VERSION="5.2.2"
+CGAL_VERSION="5.5.2"
 EASY3D_VERSION="2.5.2"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
