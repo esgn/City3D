@@ -4,12 +4,11 @@
 # Variables #
 #############
 
-EXECUTABLE_PATH="./CLI_Easy3D_Fix/Release/CLI_Easy3D_Fix"
-CITY3D_RESULTS_DIR="data/IGN/results_fixed_with_cgal/"
-FIX_OUTPUT_DIR="data/IGN/results_fixed_with_easy3d/"
-INPUT_CSV_FILE="params_easy3d_fix.csv"
-JOBLOG_FILE="easy3d_fix.csv"
-FAILED_FILE="failed_easy3d_fix.txt"
+RESULTS_DIR="data/IGN/results_all_faces_fixed/"
+CLEANUP_OUTPUT_DIR="data/IGN/results_fixed_with_cgal/"
+INPUT_CSV_FILE="params_cleanup.csv"
+JOBLOG_FILE="cleanup.csv"
+FAILED_FILE="failed_cleanup.txt"
 TIMEOUT_SECONDS=30
 
 ##############################
@@ -18,11 +17,11 @@ TIMEOUT_SECONDS=30
 
 rm $INPUT_CSV_FILE 2> /dev/null
 
-for f in "$CITY3D_RESULTS_DIR"*
+for f in "$RESULTS_DIR"*
 do
     INPUT_RESULT_FILE=$(pwd)"/$f"
     FILENAME=$(basename "$INPUT_RESULT_FILE")
-    OUTPUT_RESULT_FILE=$(pwd)"/$FIX_OUTPUT_DIR$FILENAME"
+    OUTPUT_RESULT_FILE=$(pwd)"/$CLEANUP_OUTPUT_DIR$FILENAME"
     echo "$INPUT_RESULT_FILE,$OUTPUT_RESULT_FILE" >> $INPUT_CSV_FILE
 done
 
@@ -30,12 +29,12 @@ done
 # Recreate output directory #
 #############################
 
-if [ -d "$FIX_OUTPUT_DIR" ]
+if [ -d "$CLEANUP_OUTPUT_DIR" ]
 then
-    rm -rf $FIX_OUTPUT_DIR
+    rm -rf $CLEANUP_OUTPUT_DIR
 fi
 
-mkdir $FIX_OUTPUT_DIR
+mkdir $CLEANUP_OUTPUT_DIR
 
 ############################
 # Launch cleanup processes #
@@ -48,7 +47,7 @@ rm $FAILED_FILE 2> /dev/null
 START=$(date +%s.%N)
 
 # Launch cleanup in parallel jobs to speed things up
-cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE $EXECUTABLE_PATH {1} {2} >> /dev/null 2>&1  
+cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE ./Release/bin/CLI_Clean_Mesh {1} {2} >> /dev/null 2>&1  
 
 DURATION=$(echo "$(date +%s.%N) - $START" | bc)
 EXECUTION_TIME=`printf "%.2f seconds" ${duration/./,}`

@@ -173,11 +173,13 @@ def main():
         for f in tqdm(source, position=0, leave=True):
 
             # Will work for BDUNI and PROD3D datasets
-            cleabs=""
-            try:
-                cleabs = f['properties']['cleabs']
-            except:
-                cleabs = f['properties']['BU_id']
+            cleabs=f['id']
+
+            # We can use specific id if we 100% sure they are unique
+            # try:
+            #     cleabs = f['properties']['cleabs']
+            # except:
+            #     cleabs = f['properties']['BU_id']
 
             polygons = shape(f['geometry'])
 

@@ -174,29 +174,29 @@ def main():
         vertices, normals, faces = read_obj_file(filepath)
 
         # Merge very close coordinates values on all axis
-        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_point_in_line), 0)
-        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_point_in_line), 1)
-        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_point_in_line), 2)
+        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_coordinates), 0)
+        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_coordinates), 1)
+        vertices = cleanup_coordinates_on_axis(vertices, float(args.delta_coordinates), 2)
 
         # Add close vertices to edges in order to make a watertight mesh
-        new_faces = []
-        for face in faces:
-            candidate_vertices, candidate_count = get_candidate_vertices(face, vertices, float(args.delta_point_in_line))
-            if(len(candidate_vertices)>0):
-                new_face, vertices_added = add_candidates_to_face(face,candidate_vertices)
-                new_faces.append(new_face)
-            else:
-                new_faces.append(face)
+        # new_faces = []
+        # for face in faces:
+        #     candidate_vertices, candidate_count = get_candidate_vertices(face, vertices, float(args.delta_point_in_line))
+        #     if(len(candidate_vertices)>0):
+        #         new_face, vertices_added = add_candidates_to_face(face,candidate_vertices)
+        #         new_faces.append(new_face)
+        #     else:
+        #         new_faces.append(face)
 
         # # Only merge vertex with edges on the footprint face
-        # new_faces = faces.copy()
-        # face = faces[-1]
-        # candidate_vertices,candidate_count = get_candidate_vertices(face, vertices, float(args.delta_point_in_line))
-        # # print(candidate_count)
-        # if(len(candidate_vertices)>0):
-        #     new_face,vertices_added = add_candidates_to_face(face,candidate_vertices)
-        #     # print(vertices_added)
-        #     new_faces[-1] = (new_face)
+        new_faces = faces.copy()
+        face = faces[-1]
+        candidate_vertices,candidate_count = get_candidate_vertices(face, vertices, float(args.delta_point_in_line))
+        # print(candidate_count)
+        if(len(candidate_vertices)>0):
+            new_face,vertices_added = add_candidates_to_face(face,candidate_vertices)
+            # print(vertices_added)
+            new_faces[-1] = (new_face)
 
         write_obj_file(os.path.join(args.output_dir, filename), vertices, normals, new_faces)
 

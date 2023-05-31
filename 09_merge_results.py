@@ -31,7 +31,6 @@ def shift_faces(faces, shift_index):
         shifted_faces.append(shifted_face)
     return shifted_faces
 
-
 def main():
 
     total_count = 0

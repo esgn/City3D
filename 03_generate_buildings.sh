@@ -10,7 +10,7 @@
 EXECUTABLE_PATH="./Release/bin/CLI_IGN_LIDAR_Footprints"
 DATA_DIR="data/IGN/"
 LIDAR_DIR=$DATA_DIR"point_cloud_extracts_ply_shifted/"
-OBJ_DIR=$DATA_DIR"footprints_obj_shifted_fixed/"
+OBJ_DIR=$DATA_DIR"footprints_obj_below_pcd_shifted/"
 RESULTS_DIR_NAME="results/"
 ORIGIN_DIR_NAME="origin_shift/"
 RESULTS_DIR=$DATA_DIR$RESULTS_DIR_NAME

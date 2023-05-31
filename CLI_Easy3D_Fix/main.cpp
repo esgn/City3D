@@ -18,12 +18,6 @@ int main(int argc, char** argv) {
         LOG(ERROR) << "Error: failed to load model. Please make sure the file exists and format is correct.";
         return EXIT_FAILURE;
     }
-    
-    // std::cout << "mesh loaded. " << std::endl;
-    // std::cout << "\tvertices: " << mesh->n_vertices() << std::endl;
-    // std::cout << "\tedges: " << mesh->n_edges() << std::endl;
-    // std::cout << "\tfaces: " << mesh->n_faces() << std::endl;
-
 
     // STEP 1 : Repair polygon soup
 
@@ -42,6 +36,14 @@ int main(int argc, char** argv) {
     // stitch again (the "merge-edge" edge operation in polygonization may result in some borders)
     Surfacer::stitch_borders(mesh);
     Surfacer::merge_reversible_connected_components(mesh);
+
+    // STEP 3 : Triangulation as implemented in Easy3d client
+
+    // SurfaceMeshTriangulation triangulator(mesh);
+    // triangulator.triangulate(SurfaceMeshTriangulation::MIN_AREA);
+
+    
+
 
     // STEP 3 : Reverse orientation as implemented in Easy3d client
 

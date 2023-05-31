@@ -60,4 +60,3 @@ mkdir $BUILD_DIR
 cd $BUILD_DIR
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(($(nproc)))
- 

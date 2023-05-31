@@ -77,4 +77,5 @@ add_subdirectory(CLI_Example_1)  # command line example
 add_subdirectory(CLI_Example_2)  # command line example
 add_subdirectory(CLI_IGN_LIDAR_Footprints)  # command line example for IGN datasets
 add_subdirectory(CLI_IGN_LIDAR)  # command line example for IGN datasets
+add_subdirectory(CLI_IGN_Check_Results_Directory)  # command line to check results in directory with CGAL
 add_subdirectory(City3D)         # demo with GUI

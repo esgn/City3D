@@ -23,15 +23,15 @@ def main():
     args = parse_args()
     recreate_dir(args.output_dir)
     for f in tqdm(os.listdir(args.results_dir)):
-        cleabs = f.split(".")[0]
+        no_ext = f.split(".")[0]
         # read building obj file
         vertices, normals, faces = read_obj_file(os.path.join(args.results_dir,f))
         # read center file
-        c = read_origin(os.path.join(args.origins_dir, cleabs+".origin"))
+        c = read_origin(os.path.join(args.origins_dir, no_ext+".origin"))
         # add origin coordinates to x and y model coordinates
         vertices = [[v[0]+c[0],v[1]+c[1],v[2]] for v in vertices]
         # write obj file with shift
-        write_obj_file(os.path.join(args.output_dir,cleabs+".obj"), vertices, normals, faces)
+        write_obj_file(os.path.join(args.output_dir,no_ext+".obj"), vertices, normals, faces)
 
 if __name__ == "__main__":
     main()

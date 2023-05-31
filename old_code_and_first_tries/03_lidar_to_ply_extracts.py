@@ -33,14 +33,17 @@ def bufferize_and_get_bounds(polygon, buffer_size):
 def get_footprints_bbox(input_footprints, footprint_buffer):
     footprints_bbox_as_polygons={}
     with fiona.open(input_footprints) as src:
+
         for f in src:
 
             # Will work for BDUNI and PROD3D datasets
-            cleabs=""
-            try:
-                cleabs = f['properties']['cleabs']
-            except:
-                cleabs = f['properties']['BU_id']
+            cleabs=f['id']
+
+            # We can use specific id if we 100% sure they are unique
+            # try:
+            #     cleabs = f['properties']['cleabs']
+            # except:
+            #     cleabs = f['properties']['BU_id']
 
             polygons = shape(f['geometry'])
 

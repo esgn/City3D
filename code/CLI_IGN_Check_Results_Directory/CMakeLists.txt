@@ -6,7 +6,7 @@ project(${PROJECT_NAME})
 set(${PROJECT_NAME}_SOURCES
         main.cpp
         )
-
+        
 find_package(Eigen3 3.3.7)
 if (EIGEN3_FOUND)
   include( ${EIGEN3_USE_FILE} )
@@ -16,7 +16,8 @@ add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "CLI examples")
 
-target_link_libraries(${PROJECT_NAME} basic math model method)
+target_link_libraries(${PROJECT_NAME} basic math model method )
+
 
 # The resources directory
 target_compile_definitions(
