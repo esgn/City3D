@@ -6,10 +6,10 @@
 
 RESULTS_DIR="data/IGN/results_all_faces_fixed/"
 CLEANUP_OUTPUT_DIR="data/IGN/results_fixed_with_cgal/"
-INPUT_CSV_FILE="params_cleanup.csv"
-JOBLOG_FILE="cleanup.csv"
-FAILED_FILE="failed_cleanup.txt"
-TIMEOUT_SECONDS=30
+INPUT_CSV_FILE="params_cgal_fix.csv"
+JOBLOG_FILE="cgal_fix.csv"
+FAILED_FILE="failed_cgal_fix.txt"
+TIMEOUT_SECONDS=60
 
 ##############################
 # Parameters file generation #
@@ -50,7 +50,7 @@ START=$(date +%s.%N)
 cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(nproc) --joblog $JOBLOG_FILE ./Release/bin/CLI_Clean_Mesh {1} {2} >> /dev/null 2>&1  
 
 DURATION=$(echo "$(date +%s.%N) - $START" | bc)
-EXECUTION_TIME=`printf "%.2f seconds" ${duration/./,}`
+EXECUTION_TIME=`printf "%.2f seconds" ${DURATION/./,}`
 echo "Cleanup Execution Time: $EXECUTION_TIME"
 
 #########################
@@ -63,7 +63,7 @@ echo "======================"
 
 while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
 do
-    if [ "$Exitval" -ne "0" ]
+    if [ "$Exitval" -ne "0" ]  || [ "$Signal" -ne "0" ]
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE >> $FAILED_FILE

@@ -20,7 +20,7 @@ JOBLOG_FILE="city3d.csv"
 TIMEOUT_FILE="reconstruction_timeout.txt"
 ERROR_FILE="reconstruction_error.txt"
 SERVER_DIR="/var/www/html/data/"
-TIMEOUT_SECONDS=1200
+TIMEOUT_SECONDS=7200
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ##############################
@@ -55,7 +55,6 @@ mkdir $RESULTS_DIR
 
 # remove existing log files
 rm $JOBLOG_FILE 2> /dev/null
-rm $FAILED_FILE 2> /dev/null
 rm $TIMEOUT_FILE 2> /dev/null
 rm $ERROR_FILE 2> /dev/null
 

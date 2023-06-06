@@ -20,7 +20,7 @@ def read_obj_file(filepath):
                 vertices.append([float(x) for x in c])
             if line.startswith("vn "):
                 c=line.split()[1:]
-                normals.append([int(x) for x in c])
+                normals.append([float(x) for x in c])
             if line.startswith("f "):
                 line = " ".join(line.split())
                 c=line.split()[1:]
