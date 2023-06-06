@@ -17,20 +17,6 @@ def parse_args():
                         help="Output file containing all results in local coordinates", default="data/IGN/merged_results_shifted.obj")
     return parser.parse_args()
 
-
-def shift_faces(faces, shift_index):
-    shifted_faces = []
-    for face in faces:
-        shifted_face = []
-        for f in face:
-            if '/' in f:
-                index = int(f.split('/')[0])
-            else:
-                index=int(f)
-            shifted_face.append(index+shift_index)
-        shifted_faces.append(shifted_face)
-    return shifted_faces
-
 def main():
 
     total_count = 0
