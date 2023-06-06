@@ -1,5 +1,6 @@
 import os
 import shutil
+import math
 
 def recreate_dir(output_dir):
     if os.path.exists(output_dir):
@@ -86,3 +87,33 @@ def write_merged_obj_files(obj_files_dir, merged_obj_filename):
         shifted_faces = shift_faces(faces,shift_index)
         merged_faces += shifted_faces
     write_obj_file(merged_obj_filename, merged_vertices, merged_normals, merged_faces)
+
+
+
+def crossProduct(u, v):
+    x = u[1]*v[2]-u[2]*v[1]
+    y = u[2]*v[0]-u[0]*v[2]
+    z = u[0]*v[1]-u[1]*v[0]
+    return [x,y,z]
+
+def norme(u):
+    norme = 0
+    for coord in u:
+        norme+=coord*coord
+    norme = math.sqrt(norme)
+    return norme
+
+def normalize(u):
+    
+    n = norme(u)
+    u_n = []
+    for coord in u:
+        u_n+=[coord/n]
+    return u_n
+
+def computeZMin(face_p):
+    z_min = face_p[0][2]
+    for p in face_p:
+        if(z_min>p[2]):
+            z_min=p[2]
+    return z_min
