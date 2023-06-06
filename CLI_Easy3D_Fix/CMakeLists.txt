@@ -14,17 +14,31 @@ set(Easy3D_DIR ${CMAKE_CURRENT_LIST_DIR}/../Easy3D-2.5.2/Release)
 find_package(Easy3D REQUIRED)
 
 # create an executable target
-set(${PROJECT_NAME}_SOURCES
-    main.cpp
+set(${PROJECT_NAME}_basic_SOURCES
+    basic.cpp
 )
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+add_executable(${PROJECT_NAME}_basic ${${PROJECT_NAME}_basic_SOURCES})
+
+# create an executable target
+set(${PROJECT_NAME}_triangle_SOURCES
+    triangle.cpp
+)
+add_executable(${PROJECT_NAME}_triangle ${${PROJECT_NAME}_triangle_SOURCES})
 
 # link to necessary Easy3D modules (add more if needed, e.g., algo)
-target_link_libraries(${PROJECT_NAME} easy3d::algo_ext easy3d::algo easy3d::core easy3d::util easy3d::fileio)
+target_link_libraries(${PROJECT_NAME}_basic easy3d::algo_ext easy3d::algo easy3d::core easy3d::util easy3d::fileio)
+target_link_libraries(${PROJECT_NAME}_triangle easy3d::algo_ext easy3d::algo easy3d::core easy3d::util easy3d::fileio)
 
 # The resources directory
 target_compile_definitions(
-        ${PROJECT_NAME}
-        PRIVATE
-        "EASY3D_ROOT_DIR=\"${CMAKE_CURRENT_LIST_DIR}\""
+    ${PROJECT_NAME}_basic
+    PRIVATE
+    "EASY3D_ROOT_DIR=\"${CMAKE_CURRENT_LIST_DIR}\""
+)
+
+# The resources directory
+target_compile_definitions(
+    ${PROJECT_NAME}_triangle
+    PRIVATE
+    "EASY3D_ROOT_DIR=\"${CMAKE_CURRENT_LIST_DIR}\""
 )

@@ -22,43 +22,30 @@ int main(int argc, char** argv) {
     // STEP 1 : Repair polygon soup
 
     Surfacer::repair_polygon_soup(mesh);
+    std::cout << "repair done" << std::endl;
+
+    // STEP 2 : Triangulate
+
+    SurfaceMeshTriangulation triangulator(mesh);
+    triangulator.triangulate(SurfaceMeshTriangulation::MIN_AREA);
+    std::cout << "triangulate done" << std::endl;
 
     // STEP 2: Polygonization as implemented in Easy3D client
 
     // stitch first: to encourage large polygons
     Surfacer::stitch_borders(mesh);
     Surfacer::merge_reversible_connected_components(mesh);
+    std::cout << "stitch/merge done" << std::endl;
 
     // polygonization
     SurfaceMeshPolygonization polygonizer;
     polygonizer.apply(mesh);
+    std::cout << "polygonizer done" << std::endl;
 
     // stitch again (the "merge-edge" edge operation in polygonization may result in some borders)
     Surfacer::stitch_borders(mesh);
     Surfacer::merge_reversible_connected_components(mesh);
-
-    // STEP 3 : Triangulation as implemented in Easy3d client
-
-    // SurfaceMeshTriangulation triangulator(mesh);
-    // triangulator.triangulate(SurfaceMeshTriangulation::MIN_AREA);
-
-    
-
-
-    // STEP 3 : Reverse orientation as implemented in Easy3d client
-
-    // mesh->reverse_orientation();
-
-    // // STEP 4 : Triangulation as implemented in Easy3d client
-
-    // SurfaceMeshTriangulation triangulator(mesh);
-    // triangulator.triangulate(SurfaceMeshTriangulation::MIN_AREA);
-
-    // // STEP 5 : Remesh self intersections
-
-    // Surfacer::remesh_self_intersections(mesh, true);
-
-
+    std::cout << "stitch/merge done" << std::endl;
 
     if (SurfaceMeshIO::save(output_fixed_result_file, mesh))
         std::cout << "mesh saved to \'" << output_fixed_result_file << "\'"  << std::endl;

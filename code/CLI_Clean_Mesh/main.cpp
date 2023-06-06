@@ -54,8 +54,19 @@ int main(int argc, char *argv[])
 
   if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
   {
+    // orient the mesh
     PMP::orient(mesh);
+    // triangulate model to check orientation
+    Surface_mesh copy;
+    CGAL::copy_face_graph(mesh, copy);
+    PMP::triangulate_faces(copy);
+    // reverse orientation in the original mesh if necessary
+    if (!PMP::is_outward_oriented(copy))
+    {
+      PMP::reverse_face_orientations(mesh);
+    }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+    std::cout << "Mesh was directly valid and closed" << std::endl;
     return 0;
   }
 
@@ -72,8 +83,19 @@ int main(int argc, char *argv[])
 
   if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
   {
+    // orient the mesh
     PMP::orient(mesh);
+    // triangulate model to check orientation
+    Surface_mesh copy;
+    CGAL::copy_face_graph(mesh, copy);
+    PMP::triangulate_faces(copy);
+    // reverse orientation in the original mesh if necessary
+    if (!PMP::is_outward_oriented(copy))
+    {
+      PMP::reverse_face_orientations(mesh);
+    }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+    std::cout << "Mesh was valid and closed after CGAL default repair" << std::endl;
     return 0;
   }
 
@@ -83,8 +105,20 @@ int main(int argc, char *argv[])
 
   if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
   {
+    // orient the mesh
+    PMP::orient(mesh);
+    // triangulate model to check orientation
+    Surface_mesh copy;
+    CGAL::copy_face_graph(mesh, copy);
+    PMP::triangulate_faces(copy);
+    // reverse orientation in the original mesh if necessary
+    if (!PMP::is_outward_oriented(copy))
+    {
+      PMP::reverse_face_orientations(mesh);
+    }
     PMP::orient(mesh);
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+    std::cout << "Mesh was valid and closed after CGAL stitching" << std::endl;
     return 0;
   }
 
@@ -109,8 +143,19 @@ int main(int argc, char *argv[])
 
   if (CGAL::is_closed(mesh) && CGAL::is_valid(mesh))
   {
+    // orient the mesh
     PMP::orient(mesh);
+    // triangulate model to check orientation
+    Surface_mesh copy;
+    CGAL::copy_face_graph(mesh, copy);
+    PMP::triangulate_faces(copy);
+    // reverse orientation in the original mesh if necessary
+    if (!PMP::is_outward_oriented(copy))
+    {
+      PMP::reverse_face_orientations(mesh);
+    }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
+    std::cout << "Mesh was valid and closed after CGAL triangulate_refine_and_fair_hole()" << std::endl;
     return 0;
   }
 
