@@ -10,7 +10,7 @@ FIX_OUTPUT_DIR="data/IGN/results_fixed_with_easy3d/"
 INPUT_CSV_FILE="params_easy3d_fix.csv"
 JOBLOG_FILE="easy3d_fix.csv"
 FAILED_FILE="failed_easy3d_fix.txt"
-TIMEOUT_SECONDS=120
+TIMEOUT_SECONDS=30
 
 ##############################
 # Parameters file generation #

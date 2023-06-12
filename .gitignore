@@ -57,3 +57,5 @@ venv/
 __pycache__/
 # vscode
 .vscode/
+# unnecessary scripts
+0X*

@@ -11,6 +11,10 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # CGAL will be used as header only
 # Easy3D needs to be built
 
+# Remove directory to force fresh compilation
+# rm -rf "CGAL-$CGAL_VERSION" 
+rm -rf "Easy3D-$EASY3D_VERSION"
+
 cd $SCRIPT_DIR
 if [ ! -d "CGAL-$CGAL_VERSION" ]
 then
@@ -21,9 +25,14 @@ fi
 
 if [ ! -d "Easy3D-$EASY3D_VERSION" ]
 then
-    wget "https://github.com/LiangliangNan/Easy3D/archive/refs/tags/v$EASY3D_VERSION.tar.gz" .
-    tar -xf v$EASY3D_VERSION.tar.gz
-    rm v$EASY3D_VERSION.tar.gz
+
+    # wget "https://github.com/LiangliangNan/Easy3D/archive/refs/tags/v$EASY3D_VERSION.tar.gz" .
+    # tar -xf v$EASY3D_VERSION.tar.gz
+    # rm v$EASY3D_VERSION.tar.gz
+    
+    # For now get the latest version of main branch containing fixes we require
+    git clone git@github.com:LiangliangNan/Easy3D.git "Easy3D-$EASY3D_VERSION"
+
 fi
 
 # Build Easy3D

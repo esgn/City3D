@@ -65,7 +65,6 @@ cat $INPUT_CSV_FILE | parallel --timeout $TIMEOUT_SECONDS --colsep ',' --jobs $(
 
 DURATION=$(echo "$(date +%s.%N) - $START" | bc)
 EXECUTION_TIME=`printf "%.2f seconds" ${DURATION/./,}`
-echo "City3D Execution Time: $EXECUTION_TIME"
 
 #########################
 # List failed processes #
@@ -152,3 +151,5 @@ TAR_NAME="results_$(date +%s).tar.gz"
 tar czf $TAR_NAME -C $DATA_DIR $RESULTS_DIR_NAME $ORIGIN_DIR_NAME -C $SCRIPT_DIR $JOBLOG_FILE $ERROR_FILE $TIMEOUT_FILE
 cp $TAR_NAME $SERVER_DIR
 rm $TAR_NAME
+
+echo "City3D Execution Time: $EXECUTION_TIME"
