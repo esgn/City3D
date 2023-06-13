@@ -1,5 +1,6 @@
 import os
 import shutil
+from math import sqrt
 
 def recreate_dir(output_dir):
     if os.path.exists(output_dir):
@@ -26,6 +27,16 @@ def read_obj_file(filepath):
                 c=line.split()[1:]
                 faces.append([str(x) for x in c])
     return vertices, normals, faces
+
+# return face vertices as array of arrays
+def get_face_vertices(face, vertices, face_format=0):
+    if face_format>0:
+        face = list(f.split('/')[0] for f in face)
+    result = []
+    for index in face:
+        index = int(index)-1
+        result.append(vertices[index])    
+    return result
 
 # face_format
 # 0 : vertex
@@ -86,3 +97,28 @@ def write_merged_obj_files(obj_files_dir, merged_obj_filename):
         shifted_faces = shift_faces(faces,shift_index)
         merged_faces += shifted_faces
     write_obj_file(merged_obj_filename, merged_vertices, merged_normals, merged_faces)
+
+def norm(u):
+    norm = 0
+    for coord in u:
+        norm+=coord*coord
+    norm = sqrt(norm)
+    return norm
+
+def normalize(u):
+    n = norm(u)
+    u_n = []
+    for coord in u:
+        u_n+=[coord/n]
+    return u_n
+
+def computeZMin(face_p):
+    z_min = face_p[0][2]
+    for p in face_p:
+        if(p[2]<z_min):
+            z_min=p[2]
+    return z_min
+
+def computeAverageZMin(face_p):
+    values = [column[2] for column in face_p]
+    return sum(values) / len(values)
