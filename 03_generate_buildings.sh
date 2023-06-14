@@ -105,7 +105,7 @@ echo "======================="
 
 while IFS=$'\t' read -r Seq Host Starttime JobRuntime Send Receive Exitval Signal Command
 do
-    if [ "$Exitval" -eq "13" ]
+    if [ "$Exitval" -eq "13" ] || [ "$Signal" -ne "0" ]
     then
         BUILDING_FAILURE=$(echo $Command | awk '{print $NF}' | xargs basename | cut -d '.' -f 1)
         echo $BUILDING_FAILURE

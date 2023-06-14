@@ -8,6 +8,7 @@ import os, sys
 from skspatial.objects import Plane
 from cjio import cityjson
 from cjio.models import CityObject, Geometry
+from shapely.geometry import Polygon
 
 def parse_args():
     parser = argparse.ArgumentParser("OBJ to cityjson with semantics")
@@ -75,9 +76,10 @@ def main():
     cm = cityjson.CityJSON()
 
     for obj in objs:
-
         filename = os.path.basename(obj)
         id = filename.split('.')[0]
+        # if id != "231":
+        #     continue
         vertices, normals, faces = read_obj_file(obj)
         # Get minimum z of the current building mesh
         z_min = computeZMin(vertices)
@@ -85,11 +87,14 @@ def main():
         types = []
         for face in faces:
             face_vertices = get_face_vertices(face,vertices,face_format=1)
+            try:
+                normal = normalize(Plane.best_fit(face_vertices).normal)
+                type = semanticType(face_vertices, normal, z_min)
+            except Exception as e:
+                print("Could not semantize a face in " + obj)
+                continue
             output_faces.append(face_vertices)
-            normal = normalize(Plane.best_fit(face_vertices).normal)
-            type = semanticType(face_vertices, normal, z_min)
             types.append(type)
-
         createCityObject(id, output_faces, types, args.output_dir, cm)
     
     cm.add_to_j()

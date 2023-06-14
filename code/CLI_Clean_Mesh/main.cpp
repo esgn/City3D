@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     if (!PMP::is_outward_oriented(copy))
     {
       PMP::reverse_face_orientations(mesh);
+      std::cout << "Reversing face orientations" << std::endl;
     }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
     std::cout << "Mesh was directly valid and closed" << std::endl;
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
     if (!PMP::is_outward_oriented(copy))
     {
       PMP::reverse_face_orientations(mesh);
+      std::cout << "Reversing face orientations" << std::endl;
     }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
     std::cout << "Mesh was valid and closed after CGAL default repair" << std::endl;
@@ -115,6 +117,7 @@ int main(int argc, char *argv[])
     if (!PMP::is_outward_oriented(copy))
     {
       PMP::reverse_face_orientations(mesh);
+      std::cout << "Reversing face orientations" << std::endl;
     }
     PMP::orient(mesh);
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
@@ -153,6 +156,7 @@ int main(int argc, char *argv[])
     if (!PMP::is_outward_oriented(copy))
     {
       PMP::reverse_face_orientations(mesh);
+      std::cout << "Reversing face orientations" << std::endl;
     }
     CGAL::IO::write_polygon_mesh(outfilename, mesh, CGAL::parameters::stream_precision(17));
     std::cout << "Mesh was valid and closed after CGAL triangulate_refine_and_fair_hole()" << std::endl;
